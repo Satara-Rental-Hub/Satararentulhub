@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सातारा रेंटल हब | होम</title>
+    <!-- FontAwesome आयकॉन्ससाठी -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration File -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Multi-Language Support File -->
+    <script src="lang.js"></script>
+    
+    <style>
+        :root {
+            --primary: #FF671F;
+            --bg-light: #F4F6F9;
+            --text-dark: #2C3E50;
+            --white: #FFFFFF;
+            --premium: #8B5CF6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding-bottom: 80px;
+        }
+
+        /* टॉप बार (Hero) */
+        .top-hero {
+            background: var(--primary);
+            color: var(--white);
+            padding: 20px 20px 40px 20px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+        }
+        
+        /* About Us आयकॉन */
+        .about-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--white);
+            font-size: 22px;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* भाषा बदलणारे बटण (Top Left) */
+        .lang-toggle-btn {
+            position: absolute; top: 25px; left: 20px;
+            background: rgba(255,255,255,0.2); color: var(--white); 
+            border: 1px solid var(--white); padding: 5px 10px; 
+            border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 5px;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-tag {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* फ्लॅश ॲड अलर्ट (नवीन) */
+        .flash-ad-container {
+            background: linear-gradient(90deg, #FDE68A, #F59E0B);
+            color: #78350F;
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            display: none;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .flash-ad-container a { color: #78350F; text-decoration: underline; }
+
+        /* सर्च बार */
+        .search-container {
+            margin: -25px 20px 20px 20px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 15px 20px 15px 45px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            outline: none;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 16px;
+        }
+
+        /* काय शोधत आहात (कॅटेगरीज) */
+        .section-title {
+            padding: 0 20px;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .categories-wrapper {
+            padding: 0 20px 10px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .categories-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .categories {
+            display: flex;
+            gap: 15px;
+            width: max-content;
+        }
+        
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            min-width: 70px;
+        }
+
+        .category-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--white);
+            position: relative;
+        }
+
+        .category-icon::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 10%;
+            width: 80%;
+            height: 35%;
+            background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0));
+            border-radius: 20px 20px 50px 50px;
+            pointer-events: none;
+        }
+        
+        /* 3D Colors */
+        .cat-hostel { background: linear-gradient(135deg, #9b59b6, #8e44ad); box-shadow: 0 8px 15px rgba(155, 89, 182, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-shop { background: linear-gradient(135deg, #ff7e5f, #feb47b); box-shadow: 0 8px 15px rgba(255, 126, 95, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-room { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 8px 15px rgba(0, 114, 255, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-flat { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 8px 15px rgba(56, 239, 125, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-godown { background: linear-gradient(135deg, #606c88, #3f4c6b); box-shadow: 0 8px 15px rgba(96, 108, 136, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-office { background: linear-gradient(135deg, #8E2DE2, #4A00E0); box-shadow: 0 8px 15px rgba(142, 45, 226, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .cat-plot { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 8px 15px rgba(241, 39, 17, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        
+        .category-item span {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* 🆕 Local Ads / Premium Top Banners Slider */
+        .ads-slider-container { padding: 0 20px 10px 20px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; }
+        .ads-slider-container::-webkit-scrollbar { display: none; }
+        .ads-wrapper { display: flex; gap: 15px; width: max-content; }
+        .ad-banner { width: 300px; height: 140px; border-radius: 16px; scroll-snap-align: center; background: #E2E8F0; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: block; text-decoration: none; border: 2px solid var(--premium); }
+        .ad-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .ad-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; background: linear-gradient(135deg, #E2E8F0, #CBD5E1); color: #475569;}
+        .ad-placeholder h3 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+        .ad-tag { position: absolute; top: 10px; left: 10px; background: var(--premium); color: #FFF; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .ad-title-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 10px 15px; font-size: 14px; font-weight: 700; }
+
+        /* ताजे प्रॉपर्टीज (Dynamic Cards) */
+        .property-list {
+            padding: 0 20px;
+        }
+
+        .property-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-decoration: none;
+            display: block;
+            color: inherit;
+            position: relative;
+        }
+
+        .property-img {
+            height: 160px;
+            background: #ddd;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 40px;
+        }
+        .property-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .property-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--premium);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(139, 92, 246, 0.4);
+        }
+
+        .property-info {
+            padding: 15px;
+        }
+
+        .property-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .property-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .property-price small {
+            font-size: 12px;
+            color: #7F8C8D;
+            font-weight: 600;
+        }
+
+        .property-meta {
+            font-size: 13px;
+            color: #7F8C8D;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .loading-state { text-align: center; padding: 30px; color: #94A3B8; font-size: 14px; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active i {
+            transform: translateY(-3px);
+        }
+        
+        /* Floating Add Button (Center) */
+        .nav-item.add-btn i {
+            background: var(--primary);
+            color: var(--white);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -20px auto 4px auto;
+            box-shadow: 0 4px 10px rgba(255, 103, 31, 0.4);
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🆕 फ्लॅश ॲड (पॉप-अप ॲडमिन सेटिंग) -->
+    <div id="flash-ad-container" class="flash-ad-container">
+        <!-- ॲडमिनचा मेसेज इथे दिसेल -->
+    </div>
+
+    <!-- टॉप बार (Hero) -->
+    <div class="top-hero">
+        <button class="lang-toggle-btn" onclick="toggleLanguage()">ENG / मराठी</button>
+        <a href="about_us.html" class="about-btn"><i class="fa-solid fa-circle-info"></i></a>
+        
+        <div class="brand-logo">
+            <img src="Logo.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
+        <div class="brand-title" data-lang="brand_name">सातारा रेंटल हब</div>
+        <div class="brand-tag" data-lang="brand_tagline">मराठ्यांच्या राजधानीमध्ये आपले हक्काचे घर शोधा</div>
+    </div>
+
+    <!-- सर्च बार -->
+    <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="पोवई नाका, फ्लॅट, हॉस्टेल शोधा..." data-lang-placeholder="search_placeholder" onkeypress="if(event.keyCode===13) searchListing(this.value)">
+    </div>
+
+    <!-- काय शोधत आहात? (3D Categories) -->
+    <div class="section-title" data-lang="what_looking">काय शोधत आहात?</div>
+    <div class="categories-wrapper">
+        <div class="categories">
+            <a href="listing.html?type=hostel" class="category-item">
+                <div class="category-icon cat-hostel"><i class="fa-solid fa-bed-pulse"></i></div>
+                <span data-lang="cat_pg">हॉस्टेल/PG</span>
+            </a>
+            <a href="listing.html?type=shop" class="category-item">
+                <div class="category-icon cat-shop"><i class="fa-solid fa-store"></i></div>
+                <span data-lang="cat_shop">गाळा</span>
+            </a>
+            <a href="listing.html?type=room" class="category-item">
+                <div class="category-icon cat-room"><i class="fa-solid fa-door-open"></i></div>
+                <span data-lang="cat_room">रूम</span>
+            </a>
+            <a href="listing.html?type=flat" class="category-item">
+                <div class="category-icon cat-flat"><i class="fa-solid fa-building"></i></div>
+                <span data-lang="cat_flat">फ्लॅट</span>
+            </a>
+            <a href="listing.html?type=godown" class="category-item">
+                <div class="category-icon cat-godown"><i class="fa-solid fa-warehouse"></i></div>
+                <span data-lang="cat_godown">गोडाऊन</span>
+            </a>
+            <a href="listing.html?type=office" class="category-item">
+                <div class="category-icon cat-office"><i class="fa-solid fa-briefcase"></i></div>
+                <span data-lang="cat_office">ऑफिस</span>
+            </a>
+            <a href="listing.html?type=plot" class="category-item">
+                <div class="category-icon cat-plot"><i class="fa-solid fa-map-location-dot"></i></div>
+                <span data-lang="cat_plot">प्लॉट</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 🆕 Top Banners / Premium Ads Slider (Firebase मधून) -->
+    <div id="local-ads-section" style="display: none;">
+        <div class="section-title"><span style="color: var(--premium);"><i class="fa-solid fa-star"></i> टॉप प्रायॉरिटी लिस्टिंग</span></div>
+        <div class="ads-slider-container">
+            <div class="ads-wrapper" id="ads-wrapper">
+                <!-- Ads will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ताजे प्रीमियम आणि बेसिक प्रॉपर्टीज (Firebase मधून) -->
+    <div class="section-title" style="margin-top: 15px;">
+        <span><i class="fa-solid fa-fire" style="color: var(--primary);"></i> <span data-lang="premium_props">नवीन प्रॉपर्टीज</span></span>
+        <a href="listing.html" style="font-size:12px; color:var(--primary); text-decoration:none;" data-lang="view_all">सर्व पहा <i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+    
+    <div class="property-list" id="properties-container">
+        <div class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i> प्रॉपर्टीज लोड होत आहेत...</div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span data-lang="nav_home">होम</span>
+        </a>
+        <a href="saved.html" class="nav-item">
+            <i class="fa-regular fa-heart"></i>
+            <span data-lang="nav_saved">सेव्हड</span>
+        </a>
+        <a href="owner_dashboard.html" class="nav-item add-btn">
+            <i class="fa-solid fa-plus"></i>
+            <span data-lang="nav_add">ॲड</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fa-regular fa-user"></i>
+            <span data-lang="nav_profile">प्रोफाईल</span>
+        </a>
+    </div>
+
+    <!-- JavaScript For Firebase Fetching -->
+    <script>
+        window.onload = function() {
+            if(typeof applySavedLanguage === 'function') {
+                applySavedLanguage();
+            }
+            loadAdminAds();         // फ्लॅश आणि टॉप बॅनर ॲड्स (Admin Panels + Premium Users)
+            loadRecentProperties(); // सर्व लाईव्ह प्रॉपर्टीज
+        };
+
+        // १. Firebase मधून 'Flash Ads' आणि 'Premium Banners' लोड करणे
+        function loadAdminAds() {
+            if(typeof db !== 'undefined') {
+                
+                // फ्लॅश ॲड लोड करणे
+                db.collection("admin_settings").doc("ads_config").get().then((doc) => {
+                    if(doc.exists && doc.data().flashAd && doc.data().flashAd.active) {
+                        let flashAd = doc.data().flashAd;
+                        let container = document.getElementById('flash-ad-container');
+                        container.style.display = 'block';
+                        container.innerHTML = flashAd.link 
+                            ? `<a href="${flashAd.link}" target="_blank" style="text-decoration:none; color:inherit;"><i class="fa-solid fa-bolt"></i> ${flashAd.text}</a>` 
+                            : `<i class="fa-solid fa-bolt"></i> ${flashAd.text}`;
+                    }
+
+                    // मॅन्युअल बॅनर ॲड (जर ॲडमिनने टाकली असेल)
+                    const adsWrapper = document.getElementById('ads-wrapper');
+                    const adsSection = document.getElementById('local-ads-section');
+                    let hasBanners = false;
+
+                    if(doc.exists && doc.data().bannerAd && doc.data().bannerAd.active) {
+                        hasBanners = true;
+                        let bAd = doc.data().bannerAd;
+                        adsWrapper.innerHTML += `
+                        <a href="${bAd.link || '#'}" class="ad-banner">
+                            <span class="ad-tag"><i class="fa-solid fa-star"></i> Featured</span>
+                            <img src="${bAd.imageUrl}" alt="${bAd.title}">
+                            <div class="ad-title-overlay">${bAd.title}</div>
+                        </a>`;
+                    }
+
+                    // 🆕 प्रीमियम प्लॅन घेतलेल्या युजर्सचे ऑटोमॅटिक बॅनर्स
+                    db.collection("admin_settings").doc("premium_banners").get().then((pDoc) => {
+                        if(pDoc.exists) {
+                            let premiumAds = pDoc.data();
+                            for (let key in premiumAds) {
+                                if (premiumAds[key].active) {
+                                    hasBanners = true;
+                                    let bAd = premiumAds[key];
+                                    adsWrapper.innerHTML += `
+                                    <a href="${bAd.link || '#'}" class="ad-banner">
+                                        <span class="ad-tag"><i class="fa-solid fa-crown"></i> Top Ad</span>
+                                        <img src="${bAd.imageUrl}" alt="${bAd.title}">
+                                        <div class="ad-title-overlay">${bAd.title}</div>
+                                    </a>`;
+                                }
+                            }
+                        }
+                        
+                        if(hasBanners) {
+                            adsSection.style.display = 'block';
+                        }
+                    });
+
+                }).catch(e => console.log("Ads loading error:", e));
+            }
+        }
+
+        // २. Firebase मधून सर्व 'Live' प्रॉपर्टीज लोड करणे
+        function loadRecentProperties() {
+            if(typeof db !== 'undefined') {
+                // 'status == live' असलेल्या लेटेस्ट १० प्रॉपर्टीज
+                db.collection("properties").where("status", "==", "live").limit(10).get().then((querySnapshot) => {
+                    const propsContainer = document.getElementById('properties-container');
+                    
+                    if(querySnapshot.empty) {
+                        propsContainer.innerHTML = `<div class="loading-state">सध्या कोणतीही नवीन प्रॉपर्टी उपलब्ध नाही.</div>`;
+                        return;
+                    }
+
+                    // Sort locally since we need order by date but queried by status
+                    let propsList = [];
+                    querySnapshot.forEach(doc => { let d = doc.data(); d.id = doc.id; propsList.push(d); });
+                    propsList.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                    propsContainer.innerHTML = '';
+                    
+                    propsList.forEach((prop) => {
+                        let imgHtml = (prop.photoUrls && prop.photoUrls.length > 0) 
+                            ? `<img src="${prop.photoUrls[0]}" alt="${prop.title}">` 
+                            : `<i class="fa-regular fa-image"></i>`;
+
+                        // Premium Tag Logic (जर प्लॅन premium1 किंवा premium2 असेल तरच मुकुट दिसेल)
+                        let badgeHtml = (prop.planType === 'premium1' || prop.planType === 'premium2')
+                            ? `<div class="property-badge"><i class="fa-solid fa-crown"></i> Premium</div>` 
+                            : ``;
+
+                        let propHtml = `
+                        <a href="details.html?id=${prop.id}" class="property-card">
+                            <div class="property-img">
+                                ${imgHtml}
+                                ${badgeHtml}
+                            </div>
+                            <div class="property-info">
+                                <div class="property-title">${prop.title}</div>
+                                <div class="property-price">₹ ${prop.rent} <small>/ महिना</small></div>
+                                <div class="property-meta"><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${prop.taluka}</div>
+                            </div>
+                        </a>`;
+                        
+                        propsContainer.innerHTML += propHtml;
+                    });
+                }).catch((error) => {
+                    console.log("Properties Error:", error);
+                    document.getElementById('properties-container').innerHTML = `<div class="loading-state" style="color:red;">डेटा लोड करताना एरर आला.</div>`;
+                });
+            } else {
+                // Firebase नसताना लोकल डमी
+                document.getElementById('properties-container').innerHTML = `
+                    <a href="details.html" class="property-card">
+                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge"><i class="fa-solid fa-crown"></i> Top</div></div>
+                        <div class="property-info">
+                            <div class="property-title">आदर्श बॉईज हॉस्टेल (PG)</div>
+                            <div class="property-price">₹ २,५०० <small>/ प्रति महिना (पर बेड)</small></div>
+                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> कॅम्प परिसर, सातारा</div>
+                        </div>
+                    </a>
+                `;
+            }
+        }
+
+        // ३. सर्च फंक्शनॅलिटी (Listing पेजवर पाठवणे)
+        function searchListing(query) {
+            if(query.trim() !== "") {
+                window.location.href = `listing.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+    </script>
+</body>
+</html>

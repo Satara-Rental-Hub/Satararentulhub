@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>आमच्याबद्दल | Satara Rental Hub</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <!-- Firebase Configuration File -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Multi-Language Support File -->
+    <script src="lang.js"></script>
+    
+    <style>
+        :root {
+            --primary: #FF671F;
+            --primary-dark: #E65C00;
+            --bg-light: #F4F6F9;
+            --text-dark: #2C3E50;
+            --text-muted: #64748B;
+            --white: #FFFFFF;
+            --border: #EAECEE;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 30px; }
+
+        /* टॉप बार */
+        .top-bar {
+            background: var(--primary); color: var(--white); padding: 15px 20px;
+            position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn { color: var(--white); font-size: 20px; text-decoration: none; }
+        .page-title { flex: 1; font-size: 18px; font-weight: 700; }
+
+        /* भाषा बदलणारे बटण */
+        .lang-toggle-btn {
+            background: rgba(255,255,255,0.2); color: var(--white); border: 1px solid var(--white);
+            padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+        }
+
+        /* हिरो सेक्शन (Introduction) */
+        .hero-section {
+            background: linear-gradient(135deg, var(--white) 0%, #FFF5F0 100%);
+            padding: 40px 20px 30px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02); margin-bottom: 25px; border-bottom: 1px solid #FFE4D6;
+        }
+        .hero-logo {
+            width: 80px; height: 80px; background: var(--white); border-radius: 50%;
+            margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(255, 103, 31, 0.2); border: 2px solid var(--primary); padding: 5px;
+        }
+        .hero-logo i { font-size: 35px; color: var(--primary); }
+        .hero-section h1 { font-size: 22px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+        .hero-section p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+        /* उद्देश आणि फीचर्स (Mission & Features) */
+        .info-container { padding: 0 20px 25px 20px; }
+        .info-card {
+            background: var(--white); border-radius: 16px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border);
+        }
+        .info-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .info-title i { color: var(--primary); font-size: 18px; }
+        .info-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; text-align: justify; margin-bottom: 15px; }
+
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .feature-box { background: var(--bg-light); padding: 15px 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border); transition: 0.3s; }
+        .feature-box i { font-size: 24px; color: var(--primary); margin-bottom: 10px; display: block; }
+        .feature-box h4 { font-size: 12px; font-weight: 800; color: var(--text-dark); margin-bottom: 4px; }
+        .feature-box p { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+
+        /* आमची टीम (Our Team) */
+        .section-header { padding: 0 20px; font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text-dark); text-align: center; }
+        
+        .team-container { padding: 0 20px 25px 20px; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Updated Team Card to match screenshot */
+        .team-card {
+            background: var(--white); border-radius: 12px; padding: 0 0 20px 0; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        
+        /* केशरी पट्टा (Orange Header inside Card) */
+        .team-card-header {
+            background: var(--primary); width: 100%; height: 60px;
+            position: absolute; top: 0; left: 0; z-index: 0;
+        }
+
+        /* गोल फोटो */
+        .team-img {
+            width: 80px; height: 80px; background: #E2E8F0; border-radius: 50%;
+            margin: 20px auto 10px auto; position: relative; z-index: 1; border: 4px solid var(--white);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 35px; color: #94A3B8;
+        }
+        
+        /* माहिती (Center Aligned) */
+        .team-name { font-size: 18px; font-weight: 800; color: var(--text-dark); position: relative; z-index: 1; margin-bottom: 2px; }
+        .team-role { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; position: relative; z-index: 1; }
+        .team-bio { font-size: 13px; color: var(--text-muted); line-height: 1.6; position: relative; z-index: 1; padding: 0 15px; text-align: center; }
+
+        /* छोटीशी कायदेशीर सूचना (Small Disclaimer at Bottom) */
+        .footer-disclaimer {
+            padding: 15px 25px; text-align: center; margin-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-disclaimer p {
+            font-size: 11px; color: #94A3B8; line-height: 1.5; margin: 0;
+        }
+        .footer-disclaimer i { margin-right: 4px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- टॉप बार -->
+    <div class="top-bar">
+        <!-- बॅक बटन होम पेजवर घेऊन जाईल -->
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="page-title" data-lang="about_title">आमच्याबद्दल (About Us)</div>
+        <button class="lang-toggle-btn" onclick="toggleLanguage()">ENG / मराठी</button>
+    </div>
+
+    <!-- हिरो सेक्शन -->
+    <div class="hero-section">
+        <div class="hero-logo">
+            <i class="fa-solid fa-house-chimney"></i>
+        </div>
+        <h1 data-lang="app_name">सातारा रेंटल हब</h1>
+        <p data-lang="hero_desc">साताऱ्यातील लोकांसाठी हक्काचे, सुरक्षित आणि सर्वात सोपे रेंटल प्लॅटफॉर्म.</p>
+    </div>
+
+    <!-- ॲपचा उद्देश आणि फायदे -->
+    <div class="info-container">
+        <div class="info-card">
+            <div class="info-title"><i class="fa-solid fa-bullseye"></i> <span data-lang="mission_title">आमचा उद्देश (Our Mission)</span></div>
+            <div class="info-desc" data-lang="mission_desc">
+                साताऱ्यामध्ये घर, फ्लॅट किंवा हॉस्टेल शोधताना भाडेकरूंना बऱ्याचदा मध्यस्थांना (Brokers) मोठी फी द्यावी लागते. 'सातारा रेंटल हब' चे मुख्य ध्येय हेच आहे की, घरमालक आणि भाडेकरू यांच्यात थेट संपर्क घडवून आणणे. जेणेकरून सर्वांची वेळेची आणि पैशांची मोठी बचत होईल.
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-box">
+                    <i class="fa-solid fa-handshake-angle"></i>
+                    <h4 data-lang="feat1_title">थेट संपर्क</h4>
+                    <p data-lang="feat1_desc">मालकाशी थेट बोला</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                    <h4 data-lang="feat2_title">झिरो ब्रोकरेज</h4>
+                    <p data-lang="feat2_desc">मध्यस्थांची फी वाचवा</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h4 data-lang="feat3_title">जलद सर्व्हिस</h4>
+                    <p data-lang="feat3_desc">एका क्लिकवर माहिती</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <h4 data-lang="feat4_title">लोकल प्लॅटफॉर्म</h4>
+                    <p data-lang="feat4_desc">साताऱ्यातील सर्व तालुके</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- आमची टीम (Our Team) - Dynamic Container -->
+    <div class="section-header" data-lang="our_team">आमची टीम (Our Team)</div>
+    <div class="team-container" id="team-display-container">
+        <!-- ॲडमिन पॅनेल किंवा फायरबेस डेटा इथे लोड होईल -->
+    </div>
+
+    <!-- छोटी आणि व्यावसायिक कायदेशीर सूचना (Disclaimer) -->
+    <div class="footer-disclaimer">
+        <p>
+            <i class="fa-solid fa-circle-info"></i> <b data-lang="disclaimer_title">Disclaimer:</b> <span data-lang="disclaimer_desc">'सातारा रेंटल हब' हे प्लॅटफॉर्म तुम्हाला फक्त चांगल्या प्रॉपर्टीज सुचवण्याचे माध्यम आहे. प्रत्यक्ष घर भाड्याने घेताना किंवा खरेदी करताना कागदपत्रे आणि पैशांचे व्यवहार स्वतः काळजीपूर्वक तपासून घ्यावेत.</span>
+        </p>
+    </div>
+
+    <!-- JavaScript to load dynamic data from Firebase / LocalStorage and Language Support -->
+    <script>
+        window.onload = function() {
+            // भाषा सेट करणे
+            if(typeof applySavedLanguage === 'function') {
+                applySavedLanguage();
+            }
+
+            let teamContainer = document.getElementById("team-display-container");
+            teamContainer.innerHTML = ""; 
+
+            // १. Firebase Firestore मधून किंवा LocalStorage मधून संस्थापक (Founder) चा डेटा वाचणे
+            if (typeof db !== 'undefined') {
+                db.collection("settings").doc("founder").get().then(function(doc) {
+                    if (doc.exists) {
+                        let founderData = doc.data();
+                        renderFounder(founderData);
+                    } else {
+                        loadDefaultFounder(teamContainer);
+                    }
+                    loadTeamMembers(teamContainer);
+                }).catch(function(error) {
+                    console.log("Firebase Error, fallback to LocalStorage:", error);
+                    loadFromLocalStorage(teamContainer);
+                });
+            } else {
+                loadFromLocalStorage(teamContainer);
+            }
+        };
+
+        function renderFounder(founderData) {
+            let teamContainer = document.getElementById("team-display-container");
+            let founderCard = `
+            <div class="team-card">
+                <div class="team-card-header"></div>
+                <div class="team-img">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="team-name">${founderData.name}</div>
+                <div class="team-role">${founderData.role}</div>
+                <div class="team-bio">${founderData.bio}</div>
+            </div>`;
+            teamContainer.innerHTML += founderCard;
+        }
+
+        function loadDefaultFounder(container) {
+            container.innerHTML += `
+            <div class="team-card">
+                <div class="team-card-header"></div>
+                <div class="team-img"><i class="fa-solid fa-user-tie"></i></div>
+                <div class="team-name">प्रज्योत साळुंखे</div>
+                <div class="team-role">संस्थापक (Founder)</div>
+                <div class="team-bio">१४ वर्षांहून अधिक काळ मॅनेजमेंट क्षेत्रात काम केल्याचा अनुभव. साताऱ्यातील लोकांसाठी तंत्रज्ञानाचा वापर करून दैनंदिन जीवन सोपे करणाऱ्या नाविन्यपूर्ण सुविधा आणि ॲप्स निर्माण करण्याची आवड.</div>
+            </div>`;
+        }
+
+        function loadTeamMembers(container) {
+            let teamData = localStorage.getItem("teamData");
+            if(teamData) {
+                let teamArray = JSON.parse(teamData);
+                teamArray.forEach(function(member) {
+                    let bio = member.bio ? member.bio : "आमची सपोर्ट टीम तुम्हाला मदत करण्यासाठी नेहमी तत्पर आहे."; 
+                    let memberCard = `
+                    <div class="team-card">
+                        <div class="team-card-header"></div>
+                        <div class="team-img">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div class="team-name">${member.name}</div>
+                        <div class="team-role">${member.role}</div>
+                        <div class="team-bio">${bio}</div>
+                    </div>`;
+                    container.innerHTML += memberCard;
+                });
+            } else {
+                container.innerHTML += `
+                <div class="team-card">
+                    <div class="team-card-header"></div>
+                    <div class="team-img"><i class="fa-solid fa-headset"></i></div>
+                    <div class="team-name">सपोर्ट टीम</div>
+                    <div class="team-role">मदत आणि सहाय्य (Support)</div>
+                    <div class="team-bio">तुमच्या प्रत्येक प्रश्नाचे उत्तर देण्यासाठी आणि ॲप वापरताना येणाऱ्या अडचणी सोडवण्यासाठी आमची सपोर्ट टीम नेहमी तत्पर आहे.</div>
+                </div>`;
+            }
+        }
+
+        function loadFromLocalStorage(container) {
+            let founderData = localStorage.getItem("founderData");
+            if(founderData) {
+                renderFounder(JSON.parse(founderData));
+            } else {
+                loadDefaultFounder(container);
+            }
+            loadTeamMembers(container);
+        }
+    </script>
+</body>
+</html>
