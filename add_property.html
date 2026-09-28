@@ -106,7 +106,7 @@
             border: 1px solid var(--border);
         }
 
-        /* प्लॅन सिलेक्शन (नवीन) */
+        /* प्लॅन सिलेक्शन */
         .plan-selector { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .plan-option {
             border: 2px solid var(--border); border-radius: 12px; padding: 15px; background: var(--white);
@@ -124,7 +124,6 @@
         .plan-radio { accent-color: var(--primary); width: 18px; height: 18px; margin-left: 10px; }
         .plan-option.active.premium .plan-radio { accent-color: var(--premium); }
         
-        /* प्रीमियम अलर्ट बॉक्स */
         #premium-alert { display: none; background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; padding: 12px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; margin-top: 10px; flex-direction: column; gap: 5px; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); }
 
         /* सबमिट बटन */
@@ -148,6 +147,11 @@
 
         /* इतर प्रकारचा लपवलेला बॉक्स */
         #other-type-box, #other-area-box, #other-target-box { display: none; margin-top: -5px; }
+        
+        /* नवीन टॉगल (Commercial/Residential) */
+        .category-toggle { display: flex; background: #E2E8F0; border-radius: 12px; padding: 5px; margin-bottom: 15px; }
+        .category-btn { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 800; border-radius: 8px; cursor: pointer; color: var(--text-muted); transition: 0.3s; }
+        .category-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
     </style>
 </head>
@@ -164,12 +168,11 @@
 
     <div class="form-container">
         
-        <!-- ०. प्लॅन निवड (डायनॅमिक प्राईस आणि फ्री बेसिक) -->
+        <!-- ०. प्लॅन निवड -->
         <div class="form-group">
             <div class="section-title"><i class="fa-solid fa-crown" style="color: #8B5CF6;"></i> <span>लिस्टिंग प्लॅन निवडा</span></div>
             
             <div class="plan-selector">
-                <!-- बेसिक फ्री प्लॅन -->
                 <label class="plan-option basic active" id="option-basic" onclick="selectPlan('basic')">
                     <i class="fa-solid fa-list-ul plan-icon"></i>
                     <div class="plan-details">
@@ -180,7 +183,6 @@
                     <input type="radio" name="plan_type" value="basic" class="plan-radio" checked>
                 </label>
 
-                <!-- प्रीमियम प्लॅन १ (लहान मुदत) -->
                 <label class="plan-option premium" id="option-premium1" onclick="selectPlan('premium1')">
                     <i class="fa-solid fa-star plan-icon" style="color: #8B5CF6;"></i>
                     <div class="plan-details">
@@ -191,7 +193,6 @@
                     <input type="radio" name="plan_type" value="premium1" class="plan-radio">
                 </label>
 
-                <!-- प्रीमियम प्लॅन २ (मोठी मुदत) -->
                 <label class="plan-option premium" id="option-premium2" onclick="selectPlan('premium2')">
                     <i class="fa-solid fa-crown plan-icon" style="color: #D97706;"></i>
                     <div class="plan-details">
@@ -203,7 +204,6 @@
                 </label>
             </div>
 
-            <!-- प्रीमियम अलर्ट -->
             <div id="premium-alert">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa-solid fa-bullhorn" style="font-size: 20px;"></i>
@@ -216,24 +216,19 @@
         <div class="form-group">
             <div class="section-title"><i class="fa-solid fa-house"></i> <span data-lang="prop_info_sec">प्रॉपर्टीची माहिती</span></div>
             
+            <!-- Commercial / Residential Toggle -->
+            <label class="form-label">प्रॉपर्टीची श्रेणी (Category)</label>
+            <div class="category-toggle">
+                <div class="category-btn active" id="cat-residential" data-lang="opt_residential" onclick="setCategory('residential')">रहिवासी (Residential)</div>
+                <div class="category-btn" id="cat-commercial" data-lang="opt_commercial" onclick="setCategory('commercial')">व्यावसायिक (Commercial)</div>
+            </div>
+
+            <!-- प्रॉपर्टीचा प्रकार -->
             <label class="form-label" data-lang="select_prop_type">प्रॉपर्टीचा प्रकार निवडा</label>
             <div class="input-box">
                 <i class="fa-solid fa-building"></i>
                 <select class="form-control" id="prop-type" onchange="checkOtherType()">
-                    <option value="" disabled selected data-lang="opt_select">प्रकार निवडा...</option>
-                    <option value="1rk">1 RK</option>
-                    <option value="1bhk">1 BHK</option>
-                    <option value="2bhk">2 BHK</option>
-                    <option value="3bhk">3 BHK</option>
-                    <option value="single-room" data-lang="opt_single">सिंगल रूम</option>
-                    <option value="cot-basis" data-lang="opt_cot">कॉट बेसिस</option>
-                    <option value="hostel-pg" data-lang="opt_pg">हॉस्टेल / PG</option>
-                    <option value="flat" data-lang="opt_flat">फ्लॅट</option>
-                    <option value="shop" data-lang="opt_shop">गाळा / दुकान</option>
-                    <option value="corporate-office" data-lang="opt_office">कॉर्पोरेट ऑफिस</option>
-                    <option value="plot" data-lang="opt_plot">प्लॉट / जागा</option>
-                    <option value="godown" data-lang="opt_godown">गोडाऊन</option>
-                    <option value="other" data-lang="opt_other">इतर (Other)</option>
+                    <!-- Options will be populated dynamically based on category -->
                 </select>
             </div>
 
@@ -242,17 +237,24 @@
                 <input type="text" class="form-control" id="other-type-input" placeholder="प्रॉपर्टीचा प्रकार टाईप करा...">
             </div>
 
+            <!-- फर्निशिंग स्टेटस (Furnishing Status) -->
+            <label class="form-label">फर्निचरची स्थिती (Furnishing)</label>
+            <div class="input-box">
+                <i class="fa-solid fa-couch"></i>
+                <select class="form-control" id="prop-furnish">
+                    <option value="" disabled selected>स्थिती निवडा...</option>
+                    <option value="Unfurnished" data-lang="opt_unfurnished">फर्निचर नाही (Unfurnished / No Furniture)</option>
+                    <option value="Semi-Furnished" data-lang="opt_semi_furnished">अंशतः फर्निचर (Semi-Furnished)</option>
+                    <option value="Fully-Furnished" data-lang="opt_fully_furnished">पूर्ण फर्निचर (Fully-Furnished / Ready)</option>
+                </select>
+            </div>
+
             <!-- ही प्रॉपर्टी कोणासाठी आहे? (Target Tenant) -->
             <label class="form-label">ही प्रॉपर्टी कोणासाठी आहे? (Target Tenant)</label>
             <div class="input-box">
                 <i class="fa-solid fa-users"></i>
                 <select class="form-control" id="prop-target" onchange="checkOtherTarget()">
-                    <option value="" disabled selected>कोणासाठी आहे ते निवडा...</option>
-                    <option value="फक्त फॅमिलीसाठी">फक्त फॅमिलीसाठी (Family Only)</option>
-                    <option value="फक्त मुलांसाठी (Bachelor)">फक्त मुलांसाठी (Boys Only - Student/Bachelor)</option>
-                    <option value="फक्त मुलींसाठी (Bachelor)">फक्त मुलींसाठी (Girls Only - Student/Bachelor)</option>
-                    <option value="सर्वांसाठी">सर्वांसाठी (Anyone - Family/Bachelor)</option>
-                    <option value="other">इतर (Other)</option>
+                    <!-- Options will be populated dynamically based on category -->
                 </select>
             </div>
 
@@ -294,19 +296,20 @@
                     <label class="form-label" data-lang="taluka_label">तालुका</label>
                     <div class="input-box">
                         <i class="fa-solid fa-map-pin"></i>
+                        <!-- 🛠️ BUG FIXED: Value is standard, visual text changes via data-lang -->
                         <select class="form-control" id="prop-taluka" onchange="populateAreas()">
                             <option value="" disabled selected>तालुका निवडा...</option>
-                            <option value="सातारा">सातारा</option>
-                            <option value="कराड">कराड</option>
-                            <option value="वाई">वाई</option>
-                            <option value="फलटण">फलटण</option>
-                            <option value="कोरेगाव">कोरेगाव</option>
-                            <option value="महाबळेश्वर">महाबळेश्वर</option>
-                            <option value="पाटण">पाटण</option>
-                            <option value="माण">माण (दहिवडी)</option>
-                            <option value="खटाव">खटाव (वडूज)</option>
-                            <option value="खंडाळा">खंडाळा</option>
-                            <option value="जावळी">जावळी (मेढा)</option>
+                            <option value="satara" data-lang="taluka_satara">सातारा</option>
+                            <option value="karad" data-lang="taluka_karad">कराड</option>
+                            <option value="wai" data-lang="taluka_wai">वाई</option>
+                            <option value="phaltan" data-lang="taluka_phaltan">फलटण</option>
+                            <option value="koregaon" data-lang="taluka_koregaon">कोरेगाव</option>
+                            <option value="mahabaleshwar" data-lang="taluka_mahabaleshwar">महाबळेश्वर</option>
+                            <option value="patan" data-lang="taluka_patan">पाटण</option>
+                            <option value="man" data-lang="taluka_man">माण (दहिवडी)</option>
+                            <option value="khatav" data-lang="taluka_khatav">खटाव (वडूज)</option>
+                            <option value="khandala" data-lang="taluka_khandala">खंडाळा</option>
+                            <option value="jawali" data-lang="taluka_jawali">जावळी (मेढा)</option>
                         </select>
                     </div>
                 </div>
@@ -332,13 +335,9 @@
         <div class="form-group">
             <div class="section-title"><i class="fa-solid fa-star"></i> <span data-lang="amenities_sec">उपलब्ध सुविधा</span></div>
             
-            <div class="amenities-grid">
-                <label class="checkbox-label"><input type="checkbox" id="am-water"> २४ तास पाणी</label>
-                <label class="checkbox-label"><input type="checkbox" id="am-parking"> पार्किंग</label>
-                <label class="checkbox-label"><input type="checkbox" id="am-lift"> लिफ्ट</label>
-                <label class="checkbox-label"><input type="checkbox" id="am-security"> सुरक्षा रक्षक</label>
-                <label class="checkbox-label"><input type="checkbox" id="am-wifi"> वाय-फाय</label>
-                <label class="checkbox-label"><input type="checkbox" id="am-mess"> मेस / जेवण</label>
+            <!-- Dynamic Amenities Container -->
+            <div class="amenities-grid" id="amenities-container">
+                <!-- Amenities will be populated here -->
             </div>
 
             <label class="form-label" data-lang="rules_label">नियम आणि अधिक माहिती</label>
@@ -369,9 +368,12 @@
 
     <!-- JavaScript For Firebase and Logic -->
     <script>
+        let currentPropertyCategory = 'residential'; 
+
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
-            loadAdminPricing(); // ॲडमिन पॅनेलमधून सेट केलेल्या किमती आणणे
+            loadAdminPricing(); 
+            setCategory('residential'); 
         };
 
         // --- Fetch Admin Pricing for Plans ---
@@ -383,13 +385,10 @@
                 db.collection("admin_settings").doc("master_config").get().then((doc) => {
                     if(doc.exists && doc.data().plans) {
                         let plansData = doc.data().plans;
-                        
                         plan1Days = plansData.plan1_validity || 15;
                         plan2Days = plansData.plan2_validity || 30;
-                        
                         document.getElementById('display-plan1-title').innerText = `प्रीमियम ॲड (${plan1Days} दिवस)`;
                         document.getElementById('display-plan1-fee').innerText = "₹ " + (plansData.plan1_fee || 299);
-                        
                         document.getElementById('display-plan2-title').innerText = `प्रीमियम ॲड (${plan2Days} दिवस)`;
                         document.getElementById('display-plan2-fee').innerText = "₹ " + (plansData.plan2_fee || 399);
                     }
@@ -401,50 +400,143 @@
         let currentPlanType = 'basic';
         function selectPlan(plan) {
             currentPlanType = plan;
-            
-            // Reset Active Classes
             document.getElementById('option-basic').classList.remove('active');
             document.getElementById('option-premium1').classList.remove('active');
             document.getElementById('option-premium2').classList.remove('active');
             document.getElementById('premium-alert').style.display = 'none';
 
-            // Add Active Class
-            if(plan === 'basic') {
-                document.getElementById('option-basic').classList.add('active');
-            } else if (plan === 'premium1') {
-                document.getElementById('option-premium1').classList.add('active');
-                document.getElementById('premium-alert').style.display = 'flex';
-            } else if (plan === 'premium2') {
-                document.getElementById('option-premium2').classList.add('active');
-                document.getElementById('premium-alert').style.display = 'flex';
+            if(plan === 'basic') { document.getElementById('option-basic').classList.add('active'); } 
+            else if (plan === 'premium1') { document.getElementById('option-premium1').classList.add('active'); document.getElementById('premium-alert').style.display = 'flex'; } 
+            else if (plan === 'premium2') { document.getElementById('option-premium2').classList.add('active'); document.getElementById('premium-alert').style.display = 'flex'; }
+        }
+
+        // --- Category Toggle Logic (Commercial / Residential) ---
+        function setCategory(category) {
+            currentPropertyCategory = category;
+            
+            document.getElementById('cat-residential').classList.remove('active');
+            document.getElementById('cat-commercial').classList.remove('active');
+            document.getElementById('cat-' + category).classList.add('active');
+
+            document.getElementById('other-type-box').style.display = 'none';
+            document.getElementById('other-target-box').style.display = 'none';
+
+            populateTypesAndTargets(category);
+            populateAmenities(category);
+            
+            // Reapply language immediately so dynamic drop-downs get translated
+            if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
+        }
+
+        function populateTypesAndTargets(category) {
+            let typeSelect = document.getElementById('prop-type');
+            let targetSelect = document.getElementById('prop-target');
+            
+            typeSelect.innerHTML = '<option value="" disabled selected data-lang="opt_select">प्रकार निवडा...</option>';
+            targetSelect.innerHTML = '<option value="" disabled selected>कोणासाठी आहे ते निवडा...</option>';
+
+            if (category === 'residential') {
+                let types = [
+                    {val: '1rk', text: '1 RK', lang: ''}, {val: '1bhk', text: '1 BHK', lang: ''}, {val: '2bhk', text: '2 BHK', lang: ''}, {val: '3bhk', text: '3 BHK', lang: ''},
+                    {val: 'single-room', text: 'सिंगल रूम', lang: 'opt_single'}, {val: 'cot-basis', text: 'कॉट बेसिस', lang: 'opt_cot'}, {val: 'hostel-pg', text: 'हॉस्टेल / PG', lang: 'opt_pg'},
+                    {val: 'flat', text: 'फ्लॅट', lang: 'opt_flat'}, {val: 'other', text: 'इतर (Other)', lang: 'opt_other'}
+                ];
+                types.forEach(t => {
+                    let langAttr = t.lang ? `data-lang="${t.lang}"` : '';
+                    typeSelect.innerHTML += `<option value="${t.val}" ${langAttr}>${t.text}</option>`;
+                });
+
+                let targets = [
+                    {val: 'फक्त फॅमिलीसाठी', text: 'फक्त फॅमिलीसाठी (Family Only)'},
+                    {val: 'फक्त मुलांसाठी (Bachelor)', text: 'फक्त मुलांसाठी (Boys Only - Student/Bachelor)'},
+                    {val: 'फक्त मुलींसाठी (Bachelor)', text: 'फक्त मुलींसाठी (Girls Only - Student/Bachelor)'},
+                    {val: 'सर्वांसाठी', text: 'सर्वांसाठी (Anyone - Family/Bachelor)'},
+                    {val: 'other', text: 'इतर (Other)'}
+                ];
+                targets.forEach(t => targetSelect.innerHTML += `<option value="${t.val}">${t.text}</option>`);
+
+            } else {
+                let types = [
+                    {val: 'shop', text: 'गाळा / दुकान (Shop)', lang: 'opt_shop'}, {val: 'corporate-office', text: 'कॉर्पोरेट ऑफिस (Office)', lang: 'opt_office'}, 
+                    {val: 'godown', text: 'गोडाऊन (Warehouse)', lang: 'opt_godown'}, {val: 'plot', text: 'प्लॉट / जागा (Plot)', lang: 'opt_plot'}, 
+                    {val: 'other', text: 'इतर (Other)', lang: 'opt_other'}
+                ];
+                types.forEach(t => {
+                    let langAttr = t.lang ? `data-lang="${t.lang}"` : '';
+                    typeSelect.innerHTML += `<option value="${t.val}" ${langAttr}>${t.text}</option>`;
+                });
+
+                let targets = [
+                    {val: 'कोणत्याही व्यवसायासाठी', text: 'कोणत्याही व्यवसायासाठी (Any Business)'},
+                    {val: 'फक्त ऑफिससाठी', text: 'फक्त ऑफिस/कॉर्पोरेटसाठी (Office Only)'},
+                    {val: 'फक्त दुकानासाठी', text: 'फक्त दुकानासाठी (Shop/Retail)'},
+                    {val: 'फक्त गोडाऊनसाठी', text: 'फक्त स्टोरेज/गोडाऊन (Storage Only)'},
+                    {val: 'other', text: 'इतर (Other)'}
+                ];
+                targets.forEach(t => targetSelect.innerHTML += `<option value="${t.val}">${t.text}</option>`);
             }
         }
 
-        // --- Target Tenant Logic ---
+        function populateAmenities(category) {
+            let container = document.getElementById('amenities-container');
+            container.innerHTML = '';
+
+            if (category === 'residential') {
+                container.innerHTML = `
+                    <label class="checkbox-label"><input type="checkbox" id="am-water" value="२४ तास पाणी"> २४ तास पाणी</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-parking" value="पार्किंग"> पार्किंग</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-lift" value="लिफ्ट"> लिफ्ट</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-security" value="सुरक्षा रक्षक"> सुरक्षा रक्षक</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-wifi" value="वाय-फाय"> वाय-फाय</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-mess" value="मेस / जेवण"> मेस / जेवण</label>
+                `;
+            } else {
+                container.innerHTML = `
+                    <label class="checkbox-label"><input type="checkbox" id="am-water" value="वॉशरूम सुविधा"> वॉशरूम सुविधा</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-parking" value="कस्टमर पार्किंग"> कस्टमर पार्किंग</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-lift" value="पॉवर बॅकअप"> पॉवर बॅकअप</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-security" value="CCTV कॅमेरा"> CCTV कॅमेरा</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-wifi" value="फायर सेफ्टी"> फायर सेफ्टी</label>
+                    <label class="checkbox-label"><input type="checkbox" id="am-mess" value="हाय-स्पीड इंटरनेट"> हाय-स्पीड इंटरनेट</label>
+                `;
+            }
+        }
+
+        // --- Other Select Logics ---
+        function checkOtherType() {
+            const propType = document.getElementById('prop-type').value;
+            const otherBox = document.getElementById('other-type-box');
+            if (propType === 'other') { otherBox.style.display = 'block'; document.getElementById('other-type-input').focus(); } 
+            else { otherBox.style.display = 'none'; }
+        }
+
         function checkOtherTarget() {
             const target = document.getElementById('prop-target').value;
             const otherBox = document.getElementById('other-target-box');
-            if (target === 'other') {
-                otherBox.style.display = 'block';
-                document.getElementById('other-target-input').focus();
-            } else {
-                otherBox.style.display = 'none';
-            }
+            if (target === 'other') { otherBox.style.display = 'block'; document.getElementById('other-target-input').focus(); } 
+            else { otherBox.style.display = 'none'; }
         }
 
-        // --- Dependent Dropdown Logic (तालुका -> एरिया) ---
+        function checkOtherArea() {
+            const areaSelect = document.getElementById('prop-area').value;
+            const otherAreaBox = document.getElementById('other-area-box');
+            if (areaSelect === 'इतर') { otherAreaBox.style.display = 'block'; document.getElementById('other-area-input').focus(); } 
+            else { otherAreaBox.style.display = 'none'; }
+        }
+
+        // --- 🛠️ BUG FIXED: Keys in areasData map directly to standard value (e.g. 'satara', 'karad') ---
         const areasData = {
-            "सातारा": ["शाहूपुरी", "सदरबझार", "गोडोली", "करंजे", "शनिवार पेठ", "विसावा पार्क", "संगम नगर", "मोळाचा ओढा", "अजिंक्य कॉलनी", "इतर"],
-            "कराड": ["विद्यानगर", "मलकापूर", "मंगळवार पेठ", "आगाशिवनगर", "वनवासमाची", "कोयना वसाहत", "ओगलेवाडी", "इतर"],
-            "वाई": ["सोनगीरवाडी", "सिद्धनाथवाडी", "शेलारवाडी", "रविवार पेठ", "पाचगणी-महाबळेश्वर रोड", "धर्मपुरी", "इतर"],
-            "फलटण": ["पद्मावती नगर", "अक्षत नगर", "जाधववाडी", "लक्ष्मीनगर", "सिडको कॉलनी", "रिंग रोड परिसर", "इतर"],
-            "महाबळेश्वर": ["मुख्य बाजारपेठ", "पाचगणी रोड", "वेण्णा लेक परिसर", "मॅप्रो गार्डन जवळ", "इतर"],
-            "कोरेगाव": ["एकतानगर", "मुख्य बाजारपेठ", "रहिमतपूर रोड", "सातारा रोड परिसर", "इतर"],
-            "खटाव": ["वडूज शहर", "पुसेगाव", "मायणी", "दहिवडी रोड परिसर", "इतर"],
-            "माण": ["दहिवडी", "म्हसवड", "पिंगळी", "गोंदवले", "इतर"],
-            "पाटण": ["पाटण शहर", "कोयनानगर", "मल्हारपेठ", "तारळे", "इतर"],
-            "खंडाळा": ["लोणंद", "शिरवळ (MIDC)", "खंडाळा शहर", "पारगाव", "इतर"],
-            "जावळी": ["मेढा शहर", "कुडाळ", "केळघर", "इतर"]
+            "satara": ["शाहूपुरी", "सदरबझार", "गोडोली", "करंजे", "शनिवार पेठ", "विसावा पार्क", "संगम नगर", "मोळाचा ओढा", "अजिंक्य कॉलनी", "इतर"],
+            "karad": ["विद्यानगर", "मलकापूर", "मंगळवार पेठ", "आगाशिवनगर", "वनवासमाची", "कोयना वसाहत", "ओगलेवाडी", "इतर"],
+            "wai": ["सोनगीरवाडी", "सिद्धनाथवाडी", "शेलारवाडी", "रविवार पेठ", "पाचगणी-महाबळेश्वर रोड", "धर्मपुरी", "इतर"],
+            "phaltan": ["पद्मावती नगर", "अक्षत नगर", "जाधववाडी", "लक्ष्मीनगर", "सिडको कॉलनी", "रिंग रोड परिसर", "इतर"],
+            "mahabaleshwar": ["मुख्य बाजारपेठ", "पाचगणी रोड", "वेण्णा लेक परिसर", "मॅप्रो गार्डन जवळ", "इतर"],
+            "koregaon": ["एकतानगर", "मुख्य बाजारपेठ", "रहिमतपूर रोड", "सातारा रोड परिसर", "इतर"],
+            "khatav": ["वडूज शहर", "पुसेगाव", "मायणी", "दहिवडी रोड परिसर", "इतर"],
+            "man": ["दहिवडी", "म्हसवड", "पिंगळी", "गोंदवले", "इतर"],
+            "patan": ["पाटण शहर", "कोयनानगर", "मल्हारपेठ", "तारळे", "इतर"],
+            "khandala": ["लोणंद", "शिरवळ (MIDC)", "खंडाळा शहर", "पारगाव", "इतर"],
+            "jawali": ["मेढा शहर", "कुडाळ", "केळघर", "इतर"]
         };
 
         function populateAreas() {
@@ -464,31 +556,6 @@
                     newOption.text = area;
                     areaSelect.appendChild(newOption);
                 });
-            }
-        }
-
-        function checkOtherArea() {
-            const areaSelect = document.getElementById('prop-area').value;
-            const otherAreaBox = document.getElementById('other-area-box');
-            
-            if (areaSelect === 'इतर') {
-                otherAreaBox.style.display = 'block';
-                document.getElementById('other-area-input').focus();
-            } else {
-                otherAreaBox.style.display = 'none';
-            }
-        }
-
-        // --- Other Property Type Logic ---
-        function checkOtherType() {
-            const propType = document.getElementById('prop-type').value;
-            const otherBox = document.getElementById('other-type-box');
-            
-            if (propType === 'other') {
-                otherBox.style.display = 'block';
-                document.getElementById('other-type-input').focus();
-            } else {
-                otherBox.style.display = 'none';
             }
         }
 
@@ -525,7 +592,7 @@
         async function submitProperty() {
             const propTypeRaw = document.getElementById('prop-type').value;
             let finalPropType = propTypeRaw;
-            if(propTypeRaw === "") { alert("कृपया प्रॉपर्टीचा प्रकार निवडा!"); return; }
+            if(!propTypeRaw) { alert("कृपया प्रॉपर्टीचा प्रकार निवडा!"); return; }
             if(propTypeRaw === 'other') {
                 finalPropType = document.getElementById('other-type-input').value;
                 if(finalPropType.trim() === "") { alert("कृपया 'इतर' प्रॉपर्टीचा प्रकार टाईप करा."); return; }
@@ -533,13 +600,16 @@
 
             const targetRaw = document.getElementById('prop-target').value;
             let finalTarget = targetRaw;
-            if(targetRaw === "") { alert("कृपया ही प्रॉपर्टी कोणासाठी आहे ते निवडा!"); return; }
+            if(!targetRaw) { alert("कृपया ही प्रॉपर्टी कोणासाठी आहे ते निवडा!"); return; }
             if(targetRaw === 'other') {
                 finalTarget = document.getElementById('other-target-input').value;
                 if(finalTarget.trim() === "") { alert("कृपया टार्गेट टाईप करा."); return; }
             }
 
-            const taluka = document.getElementById('prop-taluka').value;
+            const furnishStatus = document.getElementById('prop-furnish').value;
+            if(!furnishStatus) { alert("कृपया फर्निचरची स्थिती (Furnishing Status) निवडा!"); return; }
+
+            const taluka = document.getElementById('prop-taluka').value; // Now saves 'satara' instead of 'सातारा'
             const areaRaw = document.getElementById('prop-area').value;
             let finalArea = areaRaw;
             
@@ -583,20 +653,17 @@
                     
                     submitBtn.innerHTML = "डेटा सेव्ह होत आहे... <i class='fa-solid fa-spinner fa-spin'></i>";
                     
-                    // Admin Approval Setting Check
                     db.collection("admin_settings").doc("master_config").get().then((doc) => {
                         let isManualApprovalOn = false;
                         if(doc.exists && doc.data().manualPropertyApproval) {
                             isManualApprovalOn = true;
                         }
                         
-                        // जर मॅन्युअल ॲप्रूव्हल ON असेल तर status 'pending' होईल, अन्यथा 'live' होईल
                         let initialStatus = isManualApprovalOn ? "pending" : "live";
                         
-                        saveToDatabase(title, finalPropType, finalTarget, rent, deposit, taluka, finalArea, desc, uploadedPhotoUrls, initialStatus, submitBtn);
+                        saveToDatabase(title, finalPropType, finalTarget, furnishStatus, rent, deposit, taluka, finalArea, desc, uploadedPhotoUrls, initialStatus, submitBtn);
                     }).catch(() => {
-                        // जर एरर आला तर बाय-डिफॉल्ट pending ठेवणे सुरक्षित राहील
-                        saveToDatabase(title, finalPropType, finalTarget, rent, deposit, taluka, finalArea, desc, uploadedPhotoUrls, "pending", submitBtn);
+                        saveToDatabase(title, finalPropType, finalTarget, furnishStatus, rent, deposit, taluka, finalArea, desc, uploadedPhotoUrls, "pending", submitBtn);
                     });
 
                 } catch (error) {
@@ -612,17 +679,15 @@
         }
 
         // ६. Firestore Database मध्ये डेटा टाकण्याचे फंक्शन
-        function saveToDatabase(title, type, targetTenant, rent, deposit, taluka, area, desc, photoUrlsArray, initialStatus, submitBtn) {
+        function saveToDatabase(title, type, targetTenant, furnishStatus, rent, deposit, taluka, area, desc, photoUrlsArray, initialStatus, submitBtn) {
             
             let ownerId = localStorage.getItem("currentUserId") || "unknown_owner";
             let ownerName = localStorage.getItem("currentUserName") || "Owner";
             let ownerMobile = ownerId.replace("user_", "");
 
-            // Calculate Expiry Date based on Admin Config
             let validDays = 0;
             if(currentPlanType === 'premium1') validDays = plan1Days;
             else if(currentPlanType === 'premium2') validDays = plan2Days;
-            // Basic plan does not expire automatically or we can set it to a very long time
             
             let expiryDateStr = "Lifetime";
             if(validDays > 0) {
@@ -631,38 +696,49 @@
                 expiryDateStr = expiryDate.toISOString();
             }
 
+            let selectedAmenities = {
+                water: document.getElementById('am-water') ? document.getElementById('am-water').checked : false,
+                parking: document.getElementById('am-parking') ? document.getElementById('am-parking').checked : false,
+                lift: document.getElementById('am-lift') ? document.getElementById('am-lift').checked : false,
+                security: document.getElementById('am-security') ? document.getElementById('am-security').checked : false,
+                wifi: document.getElementById('am-wifi') ? document.getElementById('am-wifi').checked : false,
+                mess: document.getElementById('am-mess') ? document.getElementById('am-mess').checked : false
+            };
+            
+            let amenitiesLabels = [];
+            if(selectedAmenities.water && document.getElementById('am-water')) amenitiesLabels.push(document.getElementById('am-water').value);
+            if(selectedAmenities.parking && document.getElementById('am-parking')) amenitiesLabels.push(document.getElementById('am-parking').value);
+            if(selectedAmenities.lift && document.getElementById('am-lift')) amenitiesLabels.push(document.getElementById('am-lift').value);
+            if(selectedAmenities.security && document.getElementById('am-security')) amenitiesLabels.push(document.getElementById('am-security').value);
+            if(selectedAmenities.wifi && document.getElementById('am-wifi')) amenitiesLabels.push(document.getElementById('am-wifi').value);
+            if(selectedAmenities.mess && document.getElementById('am-mess')) amenitiesLabels.push(document.getElementById('am-mess').value);
+
             let propertyData = {
                 ownerId: ownerId,
                 ownerName: ownerName,
                 ownerMobile: ownerMobile,
+                propertyCategory: currentPropertyCategory, 
                 title: title,
                 type: type,
                 targetTenant: targetTenant, 
+                furnishingStatus: furnishStatus, 
                 rent: Number(rent),
                 deposit: deposit ? Number(deposit) : 0,
-                taluka: taluka,
+                taluka: taluka, // 🛠️ Saved in standard format (e.g., 'satara')
                 area: area,
                 description: desc,
                 photoUrls: photoUrlsArray, 
-                status: initialStatus, // Pending or Live
+                status: initialStatus,
                 planType: currentPlanType, 
                 validityDays: validDays,
                 expiryDate: expiryDateStr, 
                 createdAt: typeof firebase !== 'undefined' ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-                amenities: {
-                    water: document.getElementById('am-water').checked,
-                    parking: document.getElementById('am-parking').checked,
-                    lift: document.getElementById('am-lift').checked,
-                    security: document.getElementById('am-security').checked,
-                    wifi: document.getElementById('am-wifi').checked,
-                    mess: document.getElementById('am-mess').checked
-                }
+                amenities: selectedAmenities,
+                amenitiesLabels: amenitiesLabels
             };
 
             if(typeof db !== 'undefined') {
                 db.collection("properties").add(propertyData).then(function(docRef) {
-                    
-                    // जर प्रीमियम प्लॅन असेल, तर ॲडमिनच्या 'Top Banner Ads' मध्ये सुद्धा ऑटोमॅटिक पाठवा
                     if(currentPlanType === 'premium1' || currentPlanType === 'premium2') {
                         db.collection("admin_settings").doc("premium_banners").set({
                             [docRef.id]: { title: title, imageUrl: photoUrlsArray[0], link: "property.html?id="+docRef.id, active: true }

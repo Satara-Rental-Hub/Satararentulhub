@@ -49,24 +49,25 @@
         }
 
         /* फिल्टर्स (Search & Dropdowns) */
-        .filters-section { background: var(--white); padding: 15px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 60px; z-index: 90; }
+        .filters-section { background: var(--white); padding: 15px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 60px; z-index: 90; display: flex; flex-direction: column; gap: 10px; }
         
-        .search-box { position: relative; margin-bottom: 12px; }
+        .search-box { position: relative; }
         .search-box input {
             width: 100%; padding: 12px 15px 12px 40px; background: var(--bg-light);
             border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none;
         }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
-        .filter-row { display: flex; gap: 10px; }
+        .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .filter-row::-webkit-scrollbar { display: none; }
         .filter-select {
-            flex: 1; padding: 10px 5px 10px 10px; background: var(--white); border: 1.5px solid var(--border);
+            flex: 0 0 auto; padding: 10px; background: var(--white); border: 1.5px solid var(--border);
             border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-dark); outline: none;
-            text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+            min-width: 120px;
         }
 
         /* क्विक चिप्स (Categories) */
-        .chips-wrapper { padding: 15px 20px 5px 20px; overflow-x: auto; scrollbar-width: none; }
+        .chips-wrapper { padding: 10px 20px 0 20px; overflow-x: auto; scrollbar-width: none; }
         .chips-wrapper::-webkit-scrollbar { display: none; }
         .chips-container { display: flex; gap: 10px; width: max-content; }
         .chip {
@@ -104,6 +105,8 @@
         
         .property-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
         .tag { background: #F1F5F9; color: #475569; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        .tag-furnish { background: #E0F2FE; color: #0284C7; border: 1px solid #BAE6FD; }
+        .tag-cat { background: #FEF3C7; color: #D97706; border: 1px solid #FDE68A; }
 
         .loading-state { text-align: center; padding: 40px 20px; color: #94A3B8; font-size: 14px; font-weight: 600; }
         .no-result { text-align: center; padding: 40px 20px; color: #94A3B8; font-size: 15px; font-weight: 600; }
@@ -144,25 +147,24 @@
             <input type="text" id="searchInput" placeholder="परिसर, गाव किंवा नाव शोधा..." data-lang-placeholder="search_placeholder" onkeyup="filterProperties()">
         </div>
         <div class="filter-row">
-            <!-- साताऱ्याचे सर्व ११ तालुके -->
+            <!-- 🛠️ UPDATE: Values are now standard English strings. Display text uses data-lang -->
             <select class="filter-select" id="talukaFilter" onchange="filterProperties()">
                 <option value="" data-lang="all_talukas">सर्व तालुके</option>
-                <option value="satara">सातारा</option>
-                <option value="karad">कराड</option>
-                <option value="wai">वाई</option>
-                <option value="phaltan">फलटण</option>
-                <option value="koregaon">कोरेगाव</option>
-                <option value="mahabaleshwar">महाबळेश्वर</option>
-                <option value="patan">पाटण</option>
-                <option value="man">माण (दहिवडी)</option>
-                <option value="khatav">खटाव (वडूज)</option>
-                <option value="khandala">खंडाळा</option>
-                <option value="jawali">जावळी (मेढा)</option>
+                <option value="satara" data-lang="taluka_satara">सातारा</option>
+                <option value="karad" data-lang="taluka_karad">कराड</option>
+                <option value="wai" data-lang="taluka_wai">वाई</option>
+                <option value="phaltan" data-lang="taluka_phaltan">फलटण</option>
+                <option value="koregaon" data-lang="taluka_koregaon">कोरेगाव</option>
+                <option value="mahabaleshwar" data-lang="taluka_mahabaleshwar">महाबळेश्वर</option>
+                <option value="patan" data-lang="taluka_patan">पाटण</option>
+                <option value="man" data-lang="taluka_man">माण (दहिवडी)</option>
+                <option value="khatav" data-lang="taluka_khatav">खटाव (वडूज)</option>
+                <option value="khandala" data-lang="taluka_khandala">खंडाळा</option>
+                <option value="jawali" data-lang="taluka_jawali">जावळी (मेढा)</option>
             </select>
             
-            <!-- प्रॉपर्टीचे सर्व प्रकार -->
             <select class="filter-select" id="typeFilter" onchange="filterProperties()">
-                <option value="" data-lang="all_types">सर्व प्रकार</option>
+                <option value="" data-lang="all_types">सर्व प्रकार (All Types)</option>
                 <option value="1rk">1 RK</option>
                 <option value="1bhk">1 BHK</option>
                 <option value="2bhk">2 BHK</option>
@@ -176,20 +178,34 @@
                 <option value="plot" data-lang="opt_plot">प्लॉट / जागा</option>
                 <option value="godown" data-lang="opt_godown">गोडाऊन</option>
             </select>
+
+            <!-- 🆕 फर्निचर फिल्टर -->
+            <select class="filter-select" id="furnishFilter" onchange="filterProperties()">
+                <option value="" data-lang="all_furnishing">सर्व फर्निचर (All Furnishing)</option>
+                <option value="Fully-Furnished" data-lang="opt_fully_furnished">Fully Furnished</option>
+                <option value="Semi-Furnished" data-lang="opt_semi_furnished">Semi Furnished</option>
+                <option value="Unfurnished" data-lang="opt_unfurnished">Unfurnished</option>
+            </select>
+
+            <!-- 🆕 कॅटेगरी फिल्टर (Residential / Commercial) -->
+            <select class="filter-select" id="categoryFilter" onchange="filterProperties()">
+                <option value="" data-lang="all_categories">सर्व श्रेणी (All Categories)</option>
+                <option value="residential" data-lang="opt_residential">रहिवासी (Residential)</option>
+                <option value="commercial" data-lang="opt_commercial">व्यावसायिक (Commercial)</option>
+            </select>
         </div>
     </div>
 
     <!-- क्विक चिप्स (Categories) -->
     <div class="chips-wrapper">
         <div class="chips-container" id="categoryChips">
-            <div class="chip active" data-val="" onclick="setChipFilter(this)"><i class="fa-solid fa-list"></i> <span data-lang="chip_all">सर्व</span></div>
-            <div class="chip" data-val="single-room" onclick="setChipFilter(this)"><i class="fa-solid fa-bed"></i> <span data-lang="opt_single">सिंगल रूम</span></div>
-            <div class="chip" data-val="cot-basis" onclick="setChipFilter(this)"><i class="fa-solid fa-bed-pulse"></i> <span data-lang="opt_cot">कॉट बेसिस</span></div>
-            <div class="chip" data-val="hostel-pg" onclick="setChipFilter(this)"><i class="fa-solid fa-hotel"></i> <span data-lang="opt_pg">हॉस्टेल/PG</span></div>
-            <div class="chip" data-val="flat" onclick="setChipFilter(this)"><i class="fa-solid fa-building"></i> <span data-lang="opt_flat">फ्लॅट</span></div>
-            <div class="chip" data-val="shop" onclick="setChipFilter(this)"><i class="fa-solid fa-store"></i> <span data-lang="opt_shop">गाळा</span></div>
-            <div class="chip" data-val="corporate-office" onclick="setChipFilter(this)"><i class="fa-solid fa-briefcase"></i> <span data-lang="opt_office">ऑफिस</span></div>
-            <div class="chip" data-val="plot" onclick="setChipFilter(this)"><i class="fa-solid fa-map-location-dot"></i> <span data-lang="opt_plot">प्लॉट</span></div>
+            <div class="chip active" data-val="" onclick="setChipFilter(this, 'all')"><i class="fa-solid fa-list"></i> <span data-lang="chip_all">सर्व</span></div>
+            <div class="chip" data-val="residential" onclick="setChipFilter(this, 'category')"><i class="fa-solid fa-house-user"></i> <span data-lang="opt_residential">रहिवासी</span></div>
+            <div class="chip" data-val="commercial" onclick="setChipFilter(this, 'category')"><i class="fa-solid fa-briefcase"></i> <span data-lang="opt_commercial">व्यावसायिक</span></div>
+            <div class="chip" data-val="1bhk" onclick="setChipFilter(this, 'type')"><i class="fa-solid fa-bed"></i> <span>1 BHK</span></div>
+            <div class="chip" data-val="hostel-pg" onclick="setChipFilter(this, 'type')"><i class="fa-solid fa-hotel"></i> <span data-lang="opt_pg">हॉस्टेल/PG</span></div>
+            <div class="chip" data-val="shop" onclick="setChipFilter(this, 'type')"><i class="fa-solid fa-store"></i> <span data-lang="opt_shop">गाळा</span></div>
+            <div class="chip" data-val="Fully-Furnished" onclick="setChipFilter(this, 'furnish')"><i class="fa-solid fa-couch"></i> <span data-lang="opt_fully_furnished">फर्निचर</span></div>
         </div>
     </div>
 
@@ -231,22 +247,25 @@
 
     <!-- JavaScript (Firebase Fetching & Filtering) -->
     <script>
-        let allProperties = []; // Firebase मधून आलेला सर्व डेटा इथे सेव्ह होईल
-        let filteredProperties = []; // फिल्टर केलेला डेटा
+        let allProperties = []; 
+        let filteredProperties = []; 
 
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') {
                 applySavedLanguage();
             }
             
-            // URL मधील Category किंवा Search Query शोधणे (उदा. index.html वरून क्लिक केल्यास)
             const urlParams = new URLSearchParams(window.location.search);
             const categoryType = urlParams.get('type');
             const searchQuery = urlParams.get('search');
 
             if(categoryType) {
-                document.getElementById('typeFilter').value = categoryType;
-                // चिप ऍक्टिव्ह करणे
+                if(categoryType === 'residential' || categoryType === 'commercial') {
+                    document.getElementById('categoryFilter').value = categoryType;
+                } else {
+                    document.getElementById('typeFilter').value = categoryType;
+                }
+                
                 let chips = document.querySelectorAll('.chip');
                 chips.forEach(c => c.classList.remove('active'));
                 let targetChip = document.querySelector(`.chip[data-val="${categoryType}"]`);
@@ -263,7 +282,6 @@
         // १. Firebase मधून सर्व "Live" प्रॉपर्टीज फेच करणे
         function fetchPropertiesFromFirebase() {
             if(typeof db !== 'undefined') {
-                // फक्त ज्यांचे status 'live' आहे तेच आणा
                 db.collection("properties").where("status", "==", "live").get().then((querySnapshot) => {
                     allProperties = [];
                     querySnapshot.forEach(doc => { 
@@ -272,61 +290,78 @@
                         allProperties.push(d); 
                     });
 
-                    // सुरुवातीला नवीन आणि प्रीमियम प्रॉपर्टीज वर (Sort by Date & Premium)
                     allProperties.sort((a,b) => {
                         let aIsPremium = (a.planType === 'premium1' || a.planType === 'premium2') ? 1 : 0;
                         let bIsPremium = (b.planType === 'premium1' || b.planType === 'premium2') ? 1 : 0;
                         
                         if(bIsPremium !== aIsPremium) {
-                            return bIsPremium - aIsPremium; // प्रीमियम वरती
+                            return bIsPremium - aIsPremium; 
                         } else {
-                            return new Date(b.createdAt) - new Date(a.createdAt); // नंतर नवीन
+                            return new Date(b.createdAt) - new Date(a.createdAt); 
                         }
                     });
                     
                     filteredProperties = [...allProperties];
                     
-                    filterProperties(); // लोड झाल्यावर फिल्टर ॲप्लाय करा
+                    filterProperties(); 
 
                 }).catch((error) => {
                     console.log("Error fetching properties:", error);
                     document.getElementById('properties-container').innerHTML = `<div class="loading-state" style="color:red;">डेटा लोड करताना एरर आला.</div>`;
                 });
             } else {
-                // डमी डेटा (Firebase नसल्यास)
                 document.getElementById('properties-container').innerHTML = `<div class="no-result">लोकल टेस्टिंग मोड चालू आहे.</div>`;
             }
         }
 
         // २. चिप फिल्टर लॉजिक
-        function setChipFilter(element) {
+        function setChipFilter(element, filterKind) {
             let chips = document.querySelectorAll('.chip');
             chips.forEach(c => c.classList.remove('active'));
             element.classList.add('active');
             
-            document.getElementById('typeFilter').value = element.getAttribute('data-val');
+            document.getElementById('typeFilter').value = "";
+            document.getElementById('categoryFilter').value = "";
+            document.getElementById('furnishFilter').value = "";
+
+            let val = element.getAttribute('data-val');
+
+            if(filterKind === 'type') {
+                document.getElementById('typeFilter').value = val;
+            } else if (filterKind === 'category') {
+                document.getElementById('categoryFilter').value = val;
+            } else if (filterKind === 'furnish') {
+                document.getElementById('furnishFilter').value = val;
+            }
+            
             filterProperties();
         }
 
         // ३. प्रॉपर्टी फिल्टर करणे आणि दाखवणे
         function filterProperties() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const selectedTaluka = document.getElementById('talukaFilter').value.toLowerCase();
+            const selectedTaluka = document.getElementById('talukaFilter').value.toLowerCase(); 
             const selectedType = document.getElementById('typeFilter').value.toLowerCase();
+            const selectedFurnish = document.getElementById('furnishFilter').value;
+            const selectedCategory = document.getElementById('categoryFilter').value;
 
             filteredProperties = allProperties.filter(prop => {
-                // मॅचिंग कंडिशन्स
                 let matchSearch = prop.title.toLowerCase().includes(searchTerm) || prop.area.toLowerCase().includes(searchTerm) || prop.taluka.toLowerCase().includes(searchTerm);
+                
+                // 🛠️ Check standard value (e.g. 'satara') against selected value
                 let matchTaluka = selectedTaluka === "" || (prop.taluka && prop.taluka.toLowerCase() === selectedTaluka);
+                
                 let matchType = selectedType === "" || (prop.type && prop.type.toLowerCase() === selectedType);
+                let matchFurnish = selectedFurnish === "" || (prop.furnishingStatus && prop.furnishingStatus === selectedFurnish);
+                let matchCategory = selectedCategory === "" || (prop.propertyCategory && prop.propertyCategory === selectedCategory);
 
-                return matchSearch && matchTaluka && matchType;
+                return matchSearch && matchTaluka && matchType && matchFurnish && matchCategory;
             });
 
-            sortProperties(); // फिल्टर झाल्यावर सॉर्टिंग अप्लाय करून रेंडर करा
+            sortProperties(); 
         }
 
-        // ४. किमतीनुसार सॉर्ट करणे (Low to High / High to Low)
+        // ४. किमतीनुसार सॉर्ट करणे
         function sortProperties() {
             let sortValue = document.getElementById('sortFilter').value;
 
@@ -335,7 +370,6 @@
             } else if(sortValue === 'high') {
                 filteredProperties.sort((a,b) => b.rent - a.rent);
             } else {
-                // Default: Premium First, then New
                 filteredProperties.sort((a,b) => {
                     let aIsPremium = (a.planType === 'premium1' || a.planType === 'premium2') ? 1 : 0;
                     let bIsPremium = (b.planType === 'premium1' || b.planType === 'premium2') ? 1 : 0;
@@ -368,10 +402,25 @@
                     ? `<img src="${prop.photoUrls[0]}" alt="${prop.title}">` 
                     : `<i class="fa-regular fa-image"></i>`;
 
-                // Premium Badge Logic (जर युझरने premium1 किंवा premium2 प्लॅन घेतला असेल)
                 let badgeHtml = (prop.planType === 'premium1' || prop.planType === 'premium2')
                     ? `<div class="badge-premium"><i class="fa-solid fa-crown"></i> Premium</div>` 
                     : ``;
+
+                let furnishTag = "";
+                if(prop.furnishingStatus === "Fully-Furnished") furnishTag = `<span class="tag tag-furnish"><i class="fa-solid fa-couch"></i> पूर्ण फर्निचर</span>`;
+                else if(prop.furnishingStatus === "Semi-Furnished") furnishTag = `<span class="tag tag-furnish"><i class="fa-solid fa-chair"></i> अंशतः फर्निचर</span>`;
+                else if(prop.furnishingStatus === "Unfurnished") furnishTag = `<span class="tag tag-furnish">फर्निचर नाही</span>`;
+
+                let catTag = "";
+                if(prop.propertyCategory === "commercial") catTag = `<span class="tag tag-cat"><i class="fa-solid fa-briefcase"></i> व्यावसायिक</span>`;
+                else if(prop.propertyCategory === "residential") catTag = `<span class="tag tag-cat"><i class="fa-solid fa-house-user"></i> रहिवासी</span>`;
+
+                // Convert stored taluka value to display language text
+                let talukaText = prop.taluka;
+                let currentLang = localStorage.getItem('appLang') || 'mr';
+                if(translations[currentLang] && translations[currentLang][`taluka_${prop.taluka}`]) {
+                    talukaText = translations[currentLang][`taluka_${prop.taluka}`];
+                }
 
                 let propHtml = `
                 <a href="details.html?id=${prop.id}" class="property-card">
@@ -384,10 +433,12 @@
                         <div class="property-title">${prop.title}</div>
                         <div class="property-price">₹ ${prop.rent} <small>/ महिना</small></div>
                         <div class="property-meta-row">
-                            <span><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${prop.taluka}</span>
+                            <span><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${talukaText}</span>
                         </div>
                         <div class="property-tags">
                             <span class="tag">${prop.type}</span>
+                            ${catTag}
+                            ${furnishTag}
                         </div>
                     </div>
                 </a>`;
@@ -400,9 +451,15 @@
 
         // Save Property Logic (Wishlist)
         function saveProperty(id) {
-            console.log("Property saved to wishlist:", id);
-            // इथे तुम्ही Local Storage किंवा Firebase मध्ये wishlist अपडेट करू शकता.
-            alert("प्रॉपर्टी सेव्ह केली!");
+            let savedProps = JSON.parse(localStorage.getItem('userWishlist')) || [];
+            if(savedProps.includes(id)) {
+                savedProps = savedProps.filter(item => item !== id);
+                alert("प्रॉपर्टी आवडीतून काढली!");
+            } else {
+                savedProps.push(id);
+                alert("प्रॉपर्टी सेव्ह केली!");
+            }
+            localStorage.setItem('userWishlist', JSON.stringify(savedProps));
         }
     </script>
 </body>

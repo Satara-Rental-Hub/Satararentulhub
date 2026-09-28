@@ -184,7 +184,7 @@
             <div class="deposit-amt"><small data-lang="deposit_lbl">डिपॉझिट</small> ₹ <span id="prop-deposit-display">...</span></div>
         </div>
 
-        <!-- हायलाईट्स -->
+        <!-- 🆕 हायलाईट्स (Updated for Furniture, Category & Target) -->
         <div class="highlights-grid">
             <div class="highlight-item">
                 <i class="fa-solid fa-building"></i>
@@ -197,9 +197,24 @@
                 <div class="highlight-lbl">कोणासाठी</div>
             </div>
             <div class="highlight-item">
+                <i class="fa-solid fa-couch"></i>
+                <div class="highlight-val" id="highlight-furnish">...</div>
+                <div class="highlight-lbl">फर्निचर</div>
+            </div>
+            <div class="highlight-item">
+                <i class="fa-solid fa-city"></i>
+                <div class="highlight-val" id="highlight-category">...</div>
+                <div class="highlight-lbl">श्रेणी</div>
+            </div>
+            <div class="highlight-item">
                 <i class="fa-solid fa-map-pin"></i>
                 <div class="highlight-val" id="highlight-taluka">...</div>
                 <div class="highlight-lbl">तालुका</div>
+            </div>
+            <div class="highlight-item">
+                <i class="fa-solid fa-location-crosshairs"></i>
+                <div class="highlight-val" id="highlight-area">...</div>
+                <div class="highlight-lbl">परिसर</div>
             </div>
         </div>
 
@@ -220,7 +235,7 @@
             <!-- लपवलेला नंबर -->
             <div class="hidden-number" id="phoneNumber">+91 98XXXXXX10</div>
             
-            <!-- 🆕 डायनॅमिक बटन -->
+            <!-- डायनॅमिक बटन -->
             <button class="btn-unlock" id="unlockBtn" onclick="processPayment()">
                 <i class="fa-solid fa-lock-open"></i> <span data-lang="unlock_number_btn">मालकाचा नंबर पहा</span> (<span id="displayFee">₹ 20</span>)
             </button>
@@ -249,7 +264,7 @@
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
             
-            // Back button logic: Go to owner dashboard if owner, else listing
+            // Back button logic
             if (document.referrer.includes("owner_dashboard")) {
                 document.getElementById("backBtn").href = "owner_dashboard.html";
             }
@@ -304,7 +319,7 @@
 
                         populateUI(propertyData);
                         
-                        // Property Views Update (फक्त भाडेकरूंनी पाहिल्यावरच व्ह्यूज वाढतील)
+                        // Property Views Update
                         if(propertyData.ownerId !== currentUserId) {
                             db.collection("properties").doc(propId).update({
                                 views: firebase.firestore.FieldValue.increment(1)
@@ -333,6 +348,10 @@
                 document.getElementById('pendingAlert').style.display = 'block';
             }
 
+            // Top Badge (Category + Type)
+            let catText = data.propertyCategory === 'commercial' ? 'व्यावसायिक' : 'रहिवासी';
+            document.getElementById('prop-type-display').innerText = `${catText} • ${data.type || "मालमत्ता"}`;
+
             // Title, Rent, Deposit
             document.getElementById('prop-title-display').innerText = data.title || "-";
             document.getElementById('prop-rent-display').innerText = data.rent || "0";
@@ -342,11 +361,19 @@
             let locationText = (data.area || "") + ", " + (data.taluka || "");
             document.getElementById('prop-location-display').innerText = locationText;
 
-            // Type Badge & Highlights
-            document.getElementById('prop-type-display').innerText = data.type || "मालमत्ता";
+            // 🆕 Highlights (Updated)
             document.getElementById('highlight-type').innerText = data.type || "-";
             document.getElementById('highlight-tenant').innerText = data.targetTenant || "सर्वांसाठी";
             document.getElementById('highlight-taluka').innerText = data.taluka || "-";
+            document.getElementById('highlight-category').innerText = catText;
+            document.getElementById('highlight-area').innerText = data.area || "-";
+
+            let furnishText = "-";
+            if(data.furnishingStatus === "Fully-Furnished") furnishText = "पूर्ण फर्निचर";
+            else if(data.furnishingStatus === "Semi-Furnished") furnishText = "अंशतः";
+            else if(data.furnishingStatus === "Unfurnished") furnishText = "फर्निचर नाही";
+            else furnishText = data.furnishingStatus || "-";
+            document.getElementById('highlight-furnish').innerText = furnishText;
 
             // Description
             document.getElementById('prop-desc-display').innerText = data.description || "माहिती उपलब्ध नाही.";
@@ -362,7 +389,6 @@
             // Gallery Images
             let galleryContainer = document.getElementById('property-gallery');
             if(data.photoUrls && data.photoUrls.length > 0) {
-                // Clear dummy items but keep premium badge
                 let isPremium = (data.planType === 'premium1' || data.planType === 'premium2');
                 galleryContainer.innerHTML = `<div id="premiumBadge" class="badge-premium" style="display:${isPremium ? 'block' : 'none'};"><i class="fa-solid fa-crown"></i> Premium</div>`;
                 data.photoUrls.forEach(url => {
@@ -370,11 +396,19 @@
                 });
             }
 
-            // Amenities
+            // 🆕 Amenities (Updated dynamic load)
             let amenitiesContainer = document.getElementById('prop-amenities-display');
             amenitiesContainer.innerHTML = '';
             let hasAnyAmenity = false;
-            if(data.amenities) {
+
+            // New logic using amenitiesLabels array
+            if(data.amenitiesLabels && data.amenitiesLabels.length > 0) {
+                data.amenitiesLabels.forEach(lbl => {
+                    amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> ${lbl}</div>`;
+                    hasAnyAmenity = true;
+                });
+            } else if(data.amenities) {
+                // Fallback logic for older properties without amenitiesLabels
                 if(data.amenities.water) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> २४ तास पाणी</div>`; hasAnyAmenity = true; }
                 if(data.amenities.parking) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> पार्किंग</div>`; hasAnyAmenity = true; }
                 if(data.amenities.lift) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> लिफ्ट</div>`; hasAnyAmenity = true; }
@@ -382,17 +416,17 @@
                 if(data.amenities.wifi) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> वाय-फाय</div>`; hasAnyAmenity = true; }
                 if(data.amenities.mess) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> मेस / जेवण</div>`; hasAnyAmenity = true; }
             }
+
             if(!hasAnyAmenity) {
                 amenitiesContainer.innerHTML = `<div style="font-size:13px; color:#94A3B8;">विशेष सुविधा नोंदवलेल्या नाहीत.</div>`;
             }
 
-            // मालक स्वतः त्याची प्रॉपर्टी पाहत असेल तर नंबर डायरेक्ट दाखवा
+            // Number display logic
             if(data.ownerId === currentUserId) {
                 unlockNumberUI();
                 return;
             }
 
-            // Check if user already unlocked this property
             let unlockedProps = JSON.parse(localStorage.getItem('unlockedProperties')) || [];
             if(unlockedProps.includes(data.id)) {
                 unlockNumberUI(); 
@@ -413,14 +447,12 @@
             if (confirmPayment) {
                 unlockNumberUI();
 
-                // Save to LocalStorage so user doesn't have to pay again
                 let unlockedProps = JSON.parse(localStorage.getItem('unlockedProperties')) || [];
                 if(!unlockedProps.includes(propertyData.id)) {
                     unlockedProps.push(propertyData.id);
                     localStorage.setItem('unlockedProperties', JSON.stringify(unlockedProps));
                 }
                 
-                // Track leads for owner
                 if(typeof db !== 'undefined') {
                     db.collection("properties").doc(propertyData.id).update({
                         leads: firebase.firestore.FieldValue.increment(1)

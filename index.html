@@ -19,18 +19,19 @@
     
     <style>
         :root {
-            --primary: #FF671F;
-            --bg-light: #F4F6F9;
-            --text-dark: #2C3E50;
+            --primary: #f45A0A; /* नवीन दिलेला ऑरेंज कलर कोड */
+            --bg-light: #F8F9FA;
+            --text-dark: #0B3B82; /* दिलेल्या कलर कोडनुसार नेव्ही ब्लू (टेक्स्ट व आयकॉन बेससाठी) */
             --white: #FFFFFF;
-            --premium: #8B5CF6;
+            --premium: #f45A0A; /* प्रीमियमचा रंग नवीन ऑरेंज केला आहे */
+            --top-bg: #0B3B82; /* दिलेल्या कलर कोडनुसार नेव्ही ब्लू (टॉप हिरो बॅकग्राउंडसाठी) */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -40,16 +41,26 @@
             padding-bottom: 80px;
         }
 
-        /* टॉप बार (Hero) */
+        /* टॉप बार (Hero) - बॅकग्राउंड म्हणून इमेज सेट केली आहे */
         .top-hero {
-            background: var(--primary);
+            background-color: var(--top-bg); /* Fallback color */
+            background-image: url('background.png'); /* तुम्ही सेव्ह केलेली बॅकग्राउंड इमेज */
+            background-size: cover;
+            background-position: center top; /* इमेजची पोझिशन थोडी वरून घेतली आहे */
+            background-repeat: no-repeat;
             color: var(--white);
-            padding: 20px 20px 40px 20px;
+            /* मजकूर आणि इमेज दिसण्यासाठी पुरेशी जागा (Height) दिली आहे */
+            padding: 40px 20px 50px 20px; /* वरून आणि खालून पॅडिंग वाढवली */
+            min-height: 280px; /* उंची थोडी वाढवली */
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             text-align: center;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* घटक खाली आणण्यासाठी */
         }
         
         /* About Us आयकॉन */
@@ -58,36 +69,44 @@
             top: 20px;
             right: 20px;
             color: var(--white);
-            font-size: 22px;
+            font-size: 20px;
             text-decoration: none;
-            background: rgba(255,255,255,0.2);
-            width: 40px;
-            height: 40px;
+            background: rgba(0, 0, 0, 0.4); /* थोडा डार्क बॅकग्राउंड */
+            border: 1px solid rgba(255,255,255,0.4);
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 10;
         }
 
         /* भाषा बदलणारे बटण (Top Left) */
         .lang-toggle-btn {
-            position: absolute; top: 25px; left: 20px;
-            background: rgba(255,255,255,0.2); color: var(--white); 
-            border: 1px solid var(--white); padding: 5px 10px; 
-            border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;
+            position: absolute; top: 22px; left: 20px;
+            background: rgba(0, 0, 0, 0.4); /* थोडा डार्क बॅकग्राउंड */
+            color: var(--white); 
+            border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; 
+            border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer;
+            z-index: 10;
         }
 
+        /* लोगो पुन्हा दिसण्यासाठी डिस्प्ले ब्लॉक केला आहे आणि अलाईनमेंट सेट केली आहे */
         .brand-logo {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: var(--white);
-            border-radius: 50%;
-            margin: 0 auto 10px auto;
+            border-radius: 12px;
+            margin-bottom: 15px; /* खालील मजकुरापासून अंतर */
+            margin-top: auto; /* वरून मोकळी जागा सोडण्यासाठी */
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             padding: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* थोडी डार्क शॅडो */
+            z-index: 5;
         }
 
         .brand-logo img {
@@ -96,16 +115,22 @@
             object-fit: contain;
         }
 
+        /* मजकूर पुन्हा दिसण्यासाठी डिस्प्ले ब्लॉक केला आहे आणि शॅडो वाढवली आहे */
         .brand-title {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: 0.5px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5); /* डार्क शॅडो */
+            z-index: 5;
         }
 
         .brand-tag {
-            font-size: 13px;
-            opacity: 0.9;
+            font-size: 14px;
+            opacity: 1;
             margin-top: 5px;
+            font-weight: 600;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8); /* डार्क शॅडो */
+            z-index: 5;
         }
 
         /* फ्लॅश ॲड अलर्ट (नवीन) */
@@ -132,28 +157,33 @@
 
         .search-container input {
             width: 100%;
-            padding: 15px 20px 15px 45px;
+            padding: 16px 20px 16px 45px;
             border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 30px; /* चित्राप्रमाणे गोल */
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* थोडी डार्क शॅडो */
             outline: none;
+            color: var(--text-dark);
+        }
+        
+        .search-container input::placeholder {
+            color: #94A3B8;
         }
 
         .search-container i {
             position: absolute;
-            left: 15px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: #94A3B8;
+            color: var(--primary); /* चित्राप्रमाणे ऑरेंज आयकॉन */
             font-size: 16px;
         }
 
         /* काय शोधत आहात (कॅटेगरीज) */
         .section-title {
             padding: 0 20px;
-            font-size: 16px;
-            font-weight: 800;
+            font-size: 18px; /* चित्राप्रमाणे मोठा फॉन्ट */
+            font-weight: 700;
             margin-bottom: 15px;
             color: var(--text-dark);
             display: flex;
@@ -183,46 +213,27 @@
             align-items: center;
             text-decoration: none;
             color: var(--text-dark);
-            min-width: 70px;
+            min-width: 75px;
         }
 
         .category-icon {
             width: 65px;
             height: 65px;
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 28px;
-            margin-bottom: 8px;
-            color: var(--white);
+            margin-bottom: 10px;
+            background: var(--white); /* चित्राप्रमाणे पांढरा बॅकग्राउंड */
             position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid #EAEAEA;
         }
 
-        .category-icon::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 10%;
-            width: 80%;
-            height: 35%;
-            background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0));
-            border-radius: 20px 20px 50px 50px;
-            pointer-events: none;
-        }
-        
-        /* 3D Colors */
-        .cat-hostel { background: linear-gradient(135deg, #9b59b6, #8e44ad); box-shadow: 0 8px 15px rgba(155, 89, 182, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-shop { background: linear-gradient(135deg, #ff7e5f, #feb47b); box-shadow: 0 8px 15px rgba(255, 126, 95, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-room { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 8px 15px rgba(0, 114, 255, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-flat { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 8px 15px rgba(56, 239, 125, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-godown { background: linear-gradient(135deg, #606c88, #3f4c6b); box-shadow: 0 8px 15px rgba(96, 108, 136, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-office { background: linear-gradient(135deg, #8E2DE2, #4A00E0); box-shadow: 0 8px 15px rgba(142, 45, 226, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .cat-plot { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 8px 15px rgba(241, 39, 17, 0.4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        
         .category-item span {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         /* 🆕 Local Ads / Premium Top Banners Slider */
@@ -237,9 +248,36 @@
         
         .ad-title-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 10px 15px; font-size: 14px; font-weight: 700; }
 
+        /* व्ह्यू टॉगल बटन्ससाठी स्टाइल */
+        .view-toggle-btns {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .view-btn.active {
+            color: var(--primary);
+        }
+
         /* ताजे प्रॉपर्टीज (Dynamic Cards) */
         .property-list {
             padding: 0 20px;
+        }
+        
+        /* ग्रिड व्ह्यू स्टाईल (डिफॉल्ट लिस्ट व्ह्यू आहे) */
+        .property-list.grid-view {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .property-card {
@@ -247,11 +285,16 @@
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid #EAEAEA;
             text-decoration: none;
             display: block;
             color: inherit;
             position: relative;
+        }
+
+        .grid-view .property-card {
+            margin-bottom: 0; /* ग्रिडमध्ये मार्जिन नको */
         }
 
         .property-img {
@@ -264,6 +307,11 @@
             color: #aaa;
             font-size: 40px;
         }
+        
+        .grid-view .property-img {
+            height: 120px; /* ग्रिडमध्ये फोटोची उंची थोडी कमी */
+        }
+        
         .property-img img { width: 100%; height: 100%; object-fit: cover; }
 
         .property-badge {
@@ -273,33 +321,55 @@
             background: var(--premium);
             color: var(--white);
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             padding: 4px 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 2px 5px rgba(255, 90, 0, 0.4);
         }
 
         .property-info {
             padding: 15px;
         }
 
+        .grid-view .property-info {
+            padding: 10px;
+        }
+
         .property-title {
             font-size: 16px;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 5px;
+            color: var(--text-dark);
+            /* ग्रिड व्ह्यू मध्ये शीर्षक एका ओळीत बसवण्यासाठी */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid-view .property-title {
+            font-size: 14px;
         }
 
         .property-price {
             font-size: 18px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--text-dark); /* किंमत चित्राप्रमाणे काळी/डार्क केली आहे */
+            margin-bottom: 8px;
+        }
+
+        .grid-view .property-price {
+            font-size: 15px;
+            margin-bottom: 4px;
         }
 
         .property-price small {
             font-size: 12px;
             color: #7F8C8D;
-            font-weight: 600;
+            font-weight: 400;
+        }
+
+        .grid-view .property-price small {
+            font-size: 10px;
         }
 
         .property-meta {
@@ -308,6 +378,14 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            /* ग्रिड व्ह्यू मध्ये पत्ता एका ओळीत बसवण्यासाठी */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid-view .property-meta {
+            font-size: 11px;
         }
 
         .loading-state { text-align: center; padding: 30px; color: #94A3B8; font-size: 14px; }
@@ -320,10 +398,9 @@
             background: var(--white);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+            border-top: 1px solid #EAEAEA;
             z-index: 100;
         }
 
@@ -331,14 +408,14 @@
             text-align: center;
             color: #94A3B8;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-decoration: none;
             flex: 1;
         }
 
         .nav-item i {
-            font-size: 22px;
-            margin-bottom: 4px;
+            font-size: 20px;
+            margin-bottom: 5px;
             display: block;
             transition: 0.3s;
         }
@@ -348,7 +425,7 @@
         }
 
         .nav-item.active i {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
         
         /* Floating Add Button (Center) */
@@ -361,8 +438,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: -20px auto 4px auto;
-            box-shadow: 0 4px 10px rgba(255, 103, 31, 0.4);
+            margin: -25px auto 4px auto;
+            box-shadow: 0 4px 10px rgba(255, 90, 0, 0.4);
             font-size: 20px;
         }
     </style>
@@ -377,52 +454,114 @@
     <!-- टॉप बार (Hero) -->
     <div class="top-hero">
         <button class="lang-toggle-btn" onclick="toggleLanguage()">ENG / मराठी</button>
-        <a href="about_us.html" class="about-btn"><i class="fa-solid fa-circle-info"></i></a>
+        <a href="about_us.html" class="about-btn"><i class="fa-solid fa-info"></i></a>
         
+        <!-- लोगो आणि मजकूर पुन्हा चालू केला आहे -->
         <div class="brand-logo">
             <img src="Logo.png" alt="Logo" onerror="this.style.display='none'">
         </div>
-        <div class="brand-title" data-lang="brand_name">सातारा रेंटल हब</div>
-        <div class="brand-tag" data-lang="brand_tagline">मराठ्यांच्या राजधानीमध्ये आपले हक्काचे घर शोधा</div>
+        <div class="brand-title" data-lang="brand_name">Satara Rental Hub</div>
+        <div class="brand-tag" data-lang="brand_tagline">Find your rightful home in the capital of Marathas</div>
     </div>
 
     <!-- सर्च बार -->
     <div class="search-container">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="पोवई नाका, फ्लॅट, हॉस्टेल शोधा..." data-lang-placeholder="search_placeholder" onkeypress="if(event.keyCode===13) searchListing(this.value)">
+        <input type="text" placeholder="Search Powai Naka, Flat, Hostel..." data-lang-placeholder="search_placeholder" onkeypress="if(event.keyCode===13) searchListing(this.value)">
     </div>
 
-    <!-- काय शोधत आहात? (3D Categories) -->
-    <div class="section-title" data-lang="what_looking">काय शोधत आहात?</div>
+    <!-- काय शोधत आहात? (Custom Exact SVGs based on Image) -->
+    <div class="section-title" data-lang="what_looking">What are you looking for?</div>
     <div class="categories-wrapper">
         <div class="categories">
             <a href="listing.html?type=hostel" class="category-item">
-                <div class="category-icon cat-hostel"><i class="fa-solid fa-bed-pulse"></i></div>
-                <span data-lang="cat_pg">हॉस्टेल/PG</span>
+                <div class="category-icon cat-hostel">
+                    <!-- Hostel/PG -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3L3 9.5L5 11L12 6L19 11L21 9.5L12 3Z" fill="var(--primary)"/>
+                        <path d="M4 11V20H6V18H18V20H20V14C20 12.8954 19.1046 12 18 12H9V14H18V15H6V11H4ZM8 14C8 14.5523 7.55228 15 7 15C6.44772 15 6 14.5523 6 14C6 13.4477 6.44772 13 7 13C7.55228 13 8 13.4477 8 14Z" fill="var(--text-dark)"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_pg">Hostel/PG</span>
             </a>
+            
             <a href="listing.html?type=shop" class="category-item">
-                <div class="category-icon cat-shop"><i class="fa-solid fa-store"></i></div>
-                <span data-lang="cat_shop">गाळा</span>
+                <div class="category-icon cat-shop">
+                    <!-- Shop -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4H20L21.5 9.5C21.5 10.3 20.8 11 20 11C19.2 11 18.5 10.3 18.5 9.5C18.5 10.3 17.8 11 17 11C16.2 11 15.5 10.3 15.5 9.5C15.5 10.3 14.8 11 14 11C13.2 11 12.5 10.3 12.5 9.5C12.5 10.3 11.8 11 11 11C10.2 11 9.5 10.3 9.5 9.5C9.5 10.3 8.8 11 8 11C7.2 11 6.5 10.3 6.5 9.5C6.5 10.3 5.8 11 5 11C4.2 11 3.5 10.3 3.5 9.5L4 4Z" fill="var(--primary)"/>
+                        <path d="M5 11.5V20H19V11.5C18.7 11.8 18.2 12 17.7 12C17.1 12 16.5 11.8 16.2 11.4C15.9 11.8 15.3 12 14.7 12C14.1 12 13.5 11.8 13.2 11.4C12.9 11.8 12.3 12 11.7 12C11.1 12 10.5 11.8 10.2 11.4C9.9 11.8 9.3 12 8.7 12C8.1 12 7.5 11.8 7.2 11.4C6.9 11.8 6.3 12 5.7 12C5.4 12 5.2 11.9 5 11.5ZM9 14H15V18H9V14Z" fill="var(--text-dark)"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_shop">Shop</span>
             </a>
+            
             <a href="listing.html?type=room" class="category-item">
-                <div class="category-icon cat-room"><i class="fa-solid fa-door-open"></i></div>
-                <span data-lang="cat_room">रूम</span>
+                <div class="category-icon cat-room">
+                    <!-- Room -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <rect x="6" y="4" width="8" height="16" fill="var(--text-dark)"/>
+                        <rect x="11.5" y="11" width="1.5" height="2" fill="#FFF"/>
+                        <path d="M14 18H20V11H17V15H14V18Z" fill="var(--primary)"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_room">Room</span>
             </a>
+            
             <a href="listing.html?type=flat" class="category-item">
-                <div class="category-icon cat-flat"><i class="fa-solid fa-building"></i></div>
-                <span data-lang="cat_flat">फ्लॅट</span>
+                <div class="category-icon cat-flat">
+                    <!-- Flat -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 3H12V21H4V3ZM12 9H20V21H12V9Z" fill="var(--text-dark)"/>
+                        <rect x="6" y="6" width="2" height="2" fill="var(--primary)"/>
+                        <rect x="9" y="6" width="2" height="2" fill="#FFF"/>
+                        <rect x="6" y="10" width="2" height="2" fill="#FFF"/>
+                        <rect x="9" y="10" width="2" height="2" fill="var(--primary)"/>
+                        <rect x="6" y="14" width="2" height="2" fill="#FFF"/>
+                        <rect x="9" y="14" width="2" height="2" fill="#FFF"/>
+                        
+                        <rect x="14" y="12" width="2" height="2" fill="#FFF"/>
+                        <rect x="17" y="12" width="2" height="2" fill="var(--primary)"/>
+                        <rect x="14" y="16" width="2" height="2" fill="var(--primary)"/>
+                        <rect x="17" y="16" width="2" height="2" fill="#FFF"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_flat">Flat</span>
             </a>
+            
             <a href="listing.html?type=godown" class="category-item">
-                <div class="category-icon cat-godown"><i class="fa-solid fa-warehouse"></i></div>
-                <span data-lang="cat_godown">गोडाऊन</span>
+                <div class="category-icon cat-godown">
+                    <!-- Godown -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 4L2 10H22L12 4Z" fill="var(--primary)"/>
+                        <path d="M4 10V20H20V10H16V16H8V10H4Z" fill="var(--text-dark)"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_godown">Godown</span>
             </a>
+            
             <a href="listing.html?type=office" class="category-item">
-                <div class="category-icon cat-office"><i class="fa-solid fa-briefcase"></i></div>
-                <span data-lang="cat_office">ऑफिस</span>
+                <div class="category-icon cat-office">
+                    <!-- Office -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 7V4H15V7" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="3" y="7" width="18" height="13" rx="1.5" fill="var(--text-dark)"/>
+                        <path d="M3 12H21" stroke="var(--primary)" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_office">Office</span>
             </a>
+            
             <a href="listing.html?type=plot" class="category-item">
-                <div class="category-icon cat-plot"><i class="fa-solid fa-map-location-dot"></i></div>
-                <span data-lang="cat_plot">प्लॉट</span>
+                <div class="category-icon cat-plot">
+                    <!-- Plot -->
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 9L10 6L16 8.5L20 5V17L14 20L8 17.5L4 19V9Z" fill="var(--text-dark)"/>
+                        <path d="M12 13C12 13 16 9.5 16 6.5C16 4.01472 14.2091 2 12 2C9.79086 2 8 4.01472 8 6.5C8 9.5 12 13 12 13Z" fill="var(--primary)"/>
+                        <circle cx="12" cy="6.5" r="1.5" fill="#FFF"/>
+                    </svg>
+                </div>
+                <span data-lang="cat_plot">Plot</span>
             </a>
         </div>
     </div>
@@ -439,8 +578,14 @@
 
     <!-- ताजे प्रीमियम आणि बेसिक प्रॉपर्टीज (Firebase मधून) -->
     <div class="section-title" style="margin-top: 15px;">
-        <span><i class="fa-solid fa-fire" style="color: var(--primary);"></i> <span data-lang="premium_props">नवीन प्रॉपर्टीज</span></span>
-        <a href="listing.html" style="font-size:12px; color:var(--primary); text-decoration:none;" data-lang="view_all">सर्व पहा <i class="fa-solid fa-chevron-right"></i></a>
+        <span><i class="fa-solid fa-fire" style="color: var(--primary);"></i> <span data-lang="premium_props">Premium Properties</span></span>
+        
+        <!-- लिस्ट आणि ग्रिड व्ह्यू टॉगल बटन्स -->
+        <div class="view-toggle-btns">
+            <button class="view-btn active" id="list-view-btn" onclick="toggleView('list')"><i class="fa-solid fa-list"></i></button>
+            <button class="view-btn" id="grid-view-btn" onclick="toggleView('grid')"><i class="fa-solid fa-border-all"></i></button>
+            <a href="listing.html" style="font-size:13px; color:var(--primary); font-weight:600; text-decoration:none; margin-left: 10px;" data-lang="view_all">View All <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i></a>
+        </div>
     </div>
     
     <div class="property-list" id="properties-container">
@@ -451,23 +596,23 @@
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <i class="fa-solid fa-house"></i>
-            <span data-lang="nav_home">होम</span>
+            <span data-lang="nav_home">Home</span>
         </a>
         <a href="saved.html" class="nav-item">
             <i class="fa-regular fa-heart"></i>
-            <span data-lang="nav_saved">सेव्हड</span>
+            <span data-lang="nav_saved">Saved</span>
         </a>
         <a href="owner_dashboard.html" class="nav-item add-btn">
             <i class="fa-solid fa-plus"></i>
-            <span data-lang="nav_add">ॲड</span>
+            <span data-lang="nav_add">Add</span>
         </a>
         <a href="profile.html" class="nav-item">
             <i class="fa-regular fa-user"></i>
-            <span data-lang="nav_profile">प्रोफाईल</span>
+            <span data-lang="nav_profile">Profile</span>
         </a>
     </div>
 
-    <!-- JavaScript For Firebase Fetching -->
+    <!-- JavaScript For Firebase Fetching & View Toggle -->
     <script>
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') {
@@ -476,6 +621,23 @@
             loadAdminAds();         // फ्लॅश आणि टॉप बॅनर ॲड्स (Admin Panels + Premium Users)
             loadRecentProperties(); // सर्व लाईव्ह प्रॉपर्टीज
         };
+
+        // व्ह्यू टॉगल फंक्शन (लिस्ट/ग्रीड)
+        function toggleView(viewType) {
+            const container = document.getElementById('properties-container');
+            const listBtn = document.getElementById('list-view-btn');
+            const gridBtn = document.getElementById('grid-view-btn');
+
+            if(viewType === 'grid') {
+                container.classList.add('grid-view');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            } else {
+                container.classList.remove('grid-view');
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            }
+        }
 
         // १. Firebase मधून 'Flash Ads' आणि 'Premium Banners' लोड करणे
         function loadAdminAds() {
@@ -587,11 +749,19 @@
                 // Firebase नसताना लोकल डमी
                 document.getElementById('properties-container').innerHTML = `
                     <a href="details.html" class="property-card">
-                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge"><i class="fa-solid fa-crown"></i> Top</div></div>
+                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Premium</div></div>
                         <div class="property-info">
-                            <div class="property-title">आदर्श बॉईज हॉस्टेल (PG)</div>
-                            <div class="property-price">₹ २,५०० <small>/ प्रति महिना (पर बेड)</small></div>
-                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> कॅम्प परिसर, सातारा</div>
+                            <div class="property-title">Boys Hostel - Satara</div>
+                            <div class="property-price">₹4,500 <small>/month</small></div>
+                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Powai Naka, Satara</div>
+                        </div>
+                    </a>
+                    <a href="details.html" class="property-card">
+                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Premium</div></div>
+                        <div class="property-info">
+                            <div class="property-title">2 BHK Flat - Satara</div>
+                            <div class="property-price">₹12,000 <small>/month</small></div>
+                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Shaniwar Peth, Satara</div>
                         </div>
                     </a>
                 `;

@@ -53,6 +53,8 @@ const translations = {
         "all_talukas": "सर्व तालुके",
         "all_types": "सर्व प्रकार",
         "chip_all": "सर्व",
+        "all_furnishing": "सर्व फर्निचर",
+        "all_categories": "सर्व श्रेणी",
 
         // --- 6. Details Page ---
         "per_month": "/ महिना",
@@ -228,6 +230,26 @@ const translations = {
         "active_ads": "चालू जाहिराती",
         "total_ads": "एकूण जाहिराती",
 
+        // --- 15. Talukas (NEW) ---
+        "taluka_satara": "सातारा",
+        "taluka_karad": "कराड",
+        "taluka_wai": "वाई",
+        "taluka_phaltan": "फलटण",
+        "taluka_koregaon": "कोरेगाव",
+        "taluka_mahabaleshwar": "महाबळेश्वर",
+        "taluka_patan": "पाटण",
+        "taluka_man": "माण (दहिवडी)",
+        "taluka_khatav": "खटाव (वडूज)",
+        "taluka_khandala": "खंडाळा",
+        "taluka_jawali": "जावळी (मेढा)",
+
+        // --- 16. Furnishing and Category Status (NEW) ---
+        "opt_fully_furnished": "पूर्ण फर्निचर",
+        "opt_semi_furnished": "अंशतः फर्निचर",
+        "opt_unfurnished": "फर्निचर नाही",
+        "opt_residential": "रहिवासी (Residential)",
+        "opt_commercial": "व्यावसायिक (Commercial)",
+
         // --- Placeholders (मराठी) ---
         "search_placeholder": "पोवई नाका, फ्लॅट, हॉस्टेल शोधा...",
         "admin_id_placeholder": "Admin ID टाका",
@@ -291,6 +313,8 @@ const translations = {
         "all_talukas": "All Talukas",
         "all_types": "All Types",
         "chip_all": "All",
+        "all_furnishing": "All Furnishing",
+        "all_categories": "All Categories",
 
         // --- 6. Details Page ---
         "per_month": "/ Month",
@@ -465,6 +489,26 @@ const translations = {
         "btn_new_ad": "New Ad",
         "active_ads": "Active Ads",
         "total_ads": "Total Ads",
+
+        // --- 15. Talukas (NEW) ---
+        "taluka_satara": "Satara",
+        "taluka_karad": "Karad",
+        "taluka_wai": "Wai",
+        "taluka_phaltan": "Phaltan",
+        "taluka_koregaon": "Koregaon",
+        "taluka_mahabaleshwar": "Mahabaleshwar",
+        "taluka_patan": "Patan",
+        "taluka_man": "Man (Dahiwadi)",
+        "taluka_khatav": "Khatav (Vaduj)",
+        "taluka_khandala": "Khandala",
+        "taluka_jawali": "Jawali (Medha)",
+
+        // --- 16. Furnishing and Category Status (NEW) ---
+        "opt_fully_furnished": "Fully Furnished",
+        "opt_semi_furnished": "Semi Furnished",
+        "opt_unfurnished": "Unfurnished",
+        "opt_residential": "Residential",
+        "opt_commercial": "Commercial",
 
         // --- Placeholders (English) ---
         "search_placeholder": "Search Powai Naka, Flat, Hostel...",
