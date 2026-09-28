@@ -335,12 +335,12 @@
             padding: 10px;
         }
 
+        /* टायटल्स ब्लू कलरमध्ये */
         .property-title {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 5px;
-            color: var(--text-dark);
-            /* ग्रिड व्ह्यू मध्ये शीर्षक एका ओळीत बसवण्यासाठी */
+            color: var(--text-dark); 
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -350,42 +350,107 @@
             font-size: 14px;
         }
 
-        .property-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-dark); /* किंमत चित्राप्रमाणे काळी/डार्क केली आहे */
-            margin-bottom: 8px;
-        }
-
-        .grid-view .property-price {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .property-price small {
-            font-size: 12px;
-            color: #7F8C8D;
-            font-weight: 400;
-        }
-
-        .grid-view .property-price small {
-            font-size: 10px;
-        }
-
+        /* लोकेशन आणि लोकेशन आयकॉन भगवा */
         .property-meta {
             font-size: 13px;
             color: #7F8C8D;
             display: flex;
             align-items: center;
             gap: 5px;
-            /* ग्रिड व्ह्यू मध्ये पत्ता एका ओळीत बसवण्यासाठी */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-bottom: 12px; /* नवीन अंतर */
+        }
+        
+        .property-meta i {
+            color: var(--primary); /* लोकेशन आयकॉन भगव्या कलरमध्ये */
         }
 
         .grid-view .property-meta {
             font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        /* फॅसिलिटी भगव्या कलरमध्ये */
+        .property-facilities {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .facility-item {
+            font-size: 11px;
+            color: var(--primary); /* फॅसिलिटीज आणि आयकॉन्स भगव्या कलरमध्ये */
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+        }
+
+        .grid-view .property-facilities {
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .grid-view .facility-item {
+            font-size: 9px;
+        }
+
+        /* फुटर - प्राईस आणि व्यू डिटेल्स बटनसाठी */
+        .property-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed #EAEAEA;
+            padding-top: 12px;
+        }
+
+        .grid-view .property-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            padding-top: 8px;
+        }
+
+        /* भाडे ब्लू कलरमध्ये */
+        .property-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark); 
+        }
+
+        .grid-view .property-price {
+            font-size: 15px;
+        }
+
+        .property-price small {
+            font-size: 12px;
+            color: #94A3B8;
+            font-weight: 500;
+        }
+
+        .grid-view .property-price small {
+            font-size: 10px;
+        }
+
+        /* व्यू डिटेल्स भगव्या कलरचा बॉक्स */
+        .view-details-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .grid-view .view-details-btn {
+            width: 100%;
+            text-align: center;
+            padding: 5px 10px;
         }
 
         .loading-state { text-align: center; padding: 30px; color: #94A3B8; font-size: 14px; }
@@ -734,8 +799,16 @@
                             </div>
                             <div class="property-info">
                                 <div class="property-title">${prop.title}</div>
-                                <div class="property-price">₹ ${prop.rent} <small>/ महिना</small></div>
                                 <div class="property-meta"><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${prop.taluka}</div>
+                                <div class="property-facilities">
+                                    <span class="facility-item"><i class="fa-solid fa-bed"></i> 1 Bed</span>
+                                    <span class="facility-item"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>
+                                    <span class="facility-item"><i class="fa-solid fa-bolt"></i> 24x7 Light</span>
+                                </div>
+                                <div class="property-footer">
+                                    <div class="property-price">₹ ${prop.rent} <small>/ महिना</small></div>
+                                    <div class="view-details-btn">View Details &rarr;</div>
+                                </div>
                             </div>
                         </a>`;
                         
@@ -752,16 +825,32 @@
                         <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Premium</div></div>
                         <div class="property-info">
                             <div class="property-title">Boys Hostel - Satara</div>
-                            <div class="property-price">₹4,500 <small>/month</small></div>
                             <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Powai Naka, Satara</div>
+                            <div class="property-facilities">
+                                <span class="facility-item"><i class="fa-solid fa-bed"></i> Single / Shared</span>
+                                <span class="facility-item"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>
+                                <span class="facility-item"><i class="fa-solid fa-utensils"></i> Mess</span>
+                            </div>
+                            <div class="property-footer">
+                                <div class="property-price">₹4,500 <small>/month</small></div>
+                                <div class="view-details-btn">View Details &rarr;</div>
+                            </div>
                         </div>
                     </a>
                     <a href="details.html" class="property-card">
-                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Premium</div></div>
+                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Featured</div></div>
                         <div class="property-info">
                             <div class="property-title">2 BHK Flat - Satara</div>
-                            <div class="property-price">₹12,000 <small>/month</small></div>
                             <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Shaniwar Peth, Satara</div>
+                            <div class="property-facilities">
+                                <span class="facility-item"><i class="fa-solid fa-bed"></i> 2 Bedrooms</span>
+                                <span class="facility-item"><i class="fa-solid fa-couch"></i> Living Room</span>
+                                <span class="facility-item"><i class="fa-solid fa-square-parking"></i> Parking</span>
+                            </div>
+                            <div class="property-footer">
+                                <div class="property-price">₹12,000 <small>/month</small></div>
+                                <div class="view-details-btn">View Details &rarr;</div>
+                            </div>
                         </div>
                     </a>
                 `;
