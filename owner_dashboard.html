@@ -264,7 +264,7 @@
             }
         }
 
-        // २. मालकाच्या स्वतःच्या प्रॉपर्टीज लोड करणे (Firebase Collection Query)
+        // २. मालकाच्या स्वतःच्या प्रॉपर्टीज लोड करणे (Firebase Collection Query with Expiry Logic)
         function loadMyProperties() {
             const container = document.getElementById("my-properties-container");
             const countEl = document.getElementById("my-ads-count");
@@ -284,8 +284,22 @@
 
                     // Sort locally since we used 'where' without composite index
                     let properties = [];
+                    let now = new Date();
+
                     querySnapshot.forEach((doc) => {
-                        let p = doc.data(); p.id = doc.id; properties.push(p);
+                        let p = doc.data(); 
+                        p.id = doc.id; 
+
+                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Check)
+                        if (p.planType && p.planType !== 'basic' && p.expiryDate && p.expiryDate !== 'Lifetime') {
+                            let expiryTime = new Date(p.expiryDate);
+                            if (now > expiryTime) {
+                                // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
+                                p.planType = 'basic';
+                            }
+                        }
+
+                        properties.push(p);
                     });
                     properties.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -300,7 +314,7 @@
                             ? `<div class="prop-status status-live"><i class="fa-solid fa-circle-check"></i> <span data-lang="status_live">लाईव्ह</span></div>`
                             : `<div class="prop-status status-pending"><i class="fa-solid fa-clock"></i> <span data-lang="status_pending">मंजुरी प्रलंबित</span></div>`;
 
-                        // Premium Badge Check
+                        // Premium Badge Check (It will not show if expired because planType changed to basic)
                         let isPremium = prop.planType === 'premium1' || prop.planType === 'premium2';
                         let premiumBadgeHtml = isPremium ? `<div class="premium-badge"><i class="fa-solid fa-star"></i> Top Ad</div>` : ``;
 

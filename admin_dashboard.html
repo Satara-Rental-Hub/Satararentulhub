@@ -10,6 +10,8 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- 🆕 Firebase Storage SDK Added for File Uploads -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
     <!-- Firebase Configuration File -->
     <script src="firebase-config.js"></script>
@@ -94,6 +96,21 @@
         .btn-approve { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .btn-reject { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .btn-edit { background: var(--bg-light); color: var(--text-dark); border: 1px solid #CBD5E1; }
+        
+        /* 🆕 Report Download Styles & Date Picker */
+        .report-filter { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; background: #E0F2FE; padding: 15px; border-radius: 12px; border: 1px dashed #0284C7; }
+        .report-filter label { font-size: 12px; font-weight: 700; color: #0284C7; }
+        .date-inputs { display: flex; gap: 10px; align-items: center; }
+        .date-inputs input[type="date"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #0284C7; background: var(--white); color: #0284C7; font-weight: 700; outline: none; }
+        .date-inputs span { color: #0284C7; font-weight: 700; font-size: 12px; }
+
+        .btn-download { background: #E2E8F0; color: #334155; font-size: 13px; font-weight: 700; padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid #CBD5E1; transition: 0.2s; margin-bottom: 10px; text-decoration: none; width: 100%; }
+        .btn-download:active { transform: scale(0.98); background: #CBD5E1; }
+        .btn-download i { color: #0284C7; font-size: 16px; }
+        
+        /* Expired Button Highlight */
+        .btn-download-alert { background: #FEF2F2; border-color: #FECACA; color: #991B1B; }
+        .btn-download-alert i { color: #DC2626; }
 
         /* Toggle Switch */
         .toggle-switch { position: relative; width: 42px; height: 22px; }
@@ -115,13 +132,22 @@
         .form-control:focus { border-color: var(--primary); background: var(--white); }
         textarea.form-control { resize: vertical; min-height: 80px; }
         
+        /* 🆕 File Upload Styles */
+        .file-upload-wrapper { position: relative; width: 100%; height: 120px; border: 2px dashed #CBD5E1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #F8FAFC; cursor: pointer; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
+        .file-upload-wrapper:hover { border-color: #D97706; background: #FFFBEB; }
+        .file-upload-wrapper input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-upload-content { text-align: center; pointer-events: none; }
+        .file-upload-content i { font-size: 30px; color: #94A3B8; margin-bottom: 5px; display: block; }
+        .file-upload-content span { font-size: 12px; color: #64748B; font-weight: 600; }
+        #ad-image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 5; }
+
         .btn-publish { background: #166534; color: var(--white); border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; box-shadow: 0 4px 15px rgba(22, 101, 52, 0.2); transition: 0.2s; }
         .btn-publish:active { transform: scale(0.97); }
         
         /* दोन कॉलम्ससाठी */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* 🆕 Team Member Added List Item */
+        /* Team Member Added List Item */
         .team-member-item {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--bg-light); padding: 10px 15px; border-radius: 10px;
@@ -180,7 +206,48 @@
         </div>
     </div>
 
-    <!-- ३. प्रॉपर्टी ॲप्रूव्हल सेटिंग्ज -->
+    <!-- 🆕 ३. डेटा आणि रिपोर्ट्स (Reports Downloads with Custom Date Picker) -->
+    <div class="section-header">
+        <span style="color: #0284C7;"><i class="fa-solid fa-file-excel"></i> डेटा रिपोर्ट्स (Downloads)</span>
+    </div>
+    <div class="list-container">
+        <div class="cms-card" style="background: #F0F9FF; border-color: #BAE6FD;">
+            
+            <div class="report-filter">
+                <label><i class="fa-solid fa-calendar-days"></i> कालावधी निवडा (Select Date Range)</label>
+                <div class="date-inputs">
+                    <input type="date" id="report-start-date" title="Start Date">
+                    <span>ते</span>
+                    <input type="date" id="report-end-date" title="End Date">
+                </div>
+            </div>
+            
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">वरील तारखांमधील संपूर्ण डेटा CSV (Excel) फॉरमॅटमध्ये डाऊनलोड करा. (तारखा न निवडल्यास सर्व डेटा येईल)</p>
+            
+            <button class="btn-download" onclick="downloadReport('revenue')">
+                <span><i class="fa-solid fa-indian-rupee-sign" style="color:#10B981; margin-right:8px;"></i> उत्पन्न आणि पेमेंट रिपोर्ट</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <button class="btn-download" onclick="downloadReport('users')">
+                <span><i class="fa-solid fa-users" style="color:#3B82F6; margin-right:8px;"></i> युझर्स लिस्ट रिपोर्ट</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <button class="btn-download" onclick="downloadReport('properties')">
+                <span><i class="fa-solid fa-building" style="color:#F59E0B; margin-right:8px;"></i> सर्व प्रॉपर्टीज रिपोर्ट</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <button class="btn-download" onclick="downloadReport('leads')">
+                <span><i class="fa-solid fa-phone" style="color:#8B5CF6; margin-right:8px;"></i> संपर्क (Leads) अनलॉक रिपोर्ट</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <button class="btn-download btn-download-alert" onclick="downloadReport('expired_plans')">
+                <span><i class="fa-solid fa-clock-rotate-left" style="margin-right:8px;"></i> एक्सपायर झालेले प्लॅन्स रिपोर्ट</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ४. प्रॉपर्टी ॲप्रूव्हल सेटिंग्ज -->
     <div class="section-header">
         <span style="color: #E65C00;"><i class="fa-solid fa-house-circle-check"></i> प्रॉपर्टी ॲप्रूव्हल सिस्टीम</span>
     </div>
@@ -199,7 +266,7 @@
         </div>
     </div>
 
-    <!-- ४. मालकांसाठी सबस्क्रिप्शन पॅकेजेस -->
+    <!-- ५. मालकांसाठी सबस्क्रिप्शन पॅकेजेस -->
     <div class="section-header">
         <span style="color: #8B5CF6;"><i class="fa-solid fa-gem"></i> मालकांसाठी प्रीमियम प्लॅन्स</span>
     </div>
@@ -240,7 +307,7 @@
         </div>
     </div>
 
-    <!-- ५. भाडेकरूंसाठी कॉन्टॅक्ट फी सेटिंग -->
+    <!-- ६. भाडेकरूंसाठी कॉन्टॅक्ट फी सेटिंग -->
     <div class="section-header">
         <span style="color: #10B981;"><i class="fa-solid fa-address-book"></i> भाडेकरूंसाठी संपर्क फी</span>
     </div>
@@ -255,7 +322,7 @@
         </div>
     </div>
 
-    <!-- ६. प्रलंबित मंजुरी (Approvals) -->
+    <!-- ७. प्रलंबित मंजुरी (Approvals) -->
     <div class="section-header">
         <span data-lang="pending_approvals">नवीन प्रॉपर्टीज (मंजुरीसाठी)</span> <span class="badge" id="pending_count_badge">0 नवीन</span>
     </div>
@@ -263,26 +330,41 @@
         <div style="text-align: center; color: #94A3B8; padding: 20px;">कोणत्याही नवीन प्रॉपर्टीज पेंडिंग नाहीत.</div>
     </div>
 
-    <!-- ७. जाहिरात व्यवस्थापन -->
+    <!-- ८. जाहिरात व्यवस्थापन (🆕 Updated with Direct Image Upload) -->
     <div class="section-header">
         <span style="color: #D97706;"><i class="fa-solid fa-rectangle-ad"></i> जाहिरात व्यवस्थापन</span>
     </div>
     <div class="list-container">
         <div class="cms-card">
             <h3 class="cms-header-title" style="color: #D97706; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;"><i class="fa-solid fa-bolt"></i> फ्लॅश ॲड (Flash Ad)</h3>
+            
             <label class="form-label">जाहिरातीचा मजकूर (Ad Text)</label>
             <input type="text" class="form-control" id="flash-ad-text" placeholder="उदा. नवीन 2BHK फ्लॅट्स उपलब्ध! २०% सूट">
-            <label class="form-label">लिंक (URL) - ऐच्छिक</label>
+            
+            <label class="form-label">लिंक (URL) - युझरने क्लिक केल्यावर कुठे जावे?</label>
             <input type="text" class="form-control" id="flash-ad-link" placeholder="उदा. https://yourlink.com">
+
+            <!-- 🆕 Direct Image Upload Provision -->
+            <label class="form-label">जाहिरातीचा फोटो निवडा (Image Upload)</label>
+            <div class="file-upload-wrapper">
+                <input type="file" id="flash-ad-file" accept="image/png, image/jpeg, image/jpg" onchange="previewAdImage(event)">
+                <div class="file-upload-content">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>गॅलरीतून फोटो निवडा</span>
+                </div>
+                <img id="ad-image-preview" alt="Ad Preview">
+            </div>
+            <!-- Hidden input to store existing or newly uploaded URL -->
+            <input type="hidden" id="flash-ad-image-url">
             
             <div class="grid-2">
-                <button class="btn-publish" style="background: #D97706; margin-top: 5px; padding: 12px;" onclick="publishFlashAd()">सेव्ह करा</button>
+                <button class="btn-publish" id="publish-ad-btn" style="background: #D97706; margin-top: 5px; padding: 12px;" onclick="publishFlashAd()">सेव्ह करा</button>
                 <button class="btn-reject" style="width: 100%; border-radius: 12px; margin-top: 5px; font-weight: bold; border: none; cursor: pointer;" onclick="removeFlashAd()"><i class="fa-solid fa-trash"></i> काढून टाका</button>
             </div>
         </div>
     </div>
 
-    <!-- ८. सपोर्ट आणि कस्टमर केअर -->
+    <!-- ९. सपोर्ट आणि कस्टमर केअर -->
     <div class="section-header">
         <i class="fa-solid fa-headset" style="color: #475569;"></i> <span style="color: #475569;">सपोर्ट आणि संपर्क</span>
     </div>
@@ -306,7 +388,7 @@
         </div>
     </div>
 
-    <!-- 🆕 ९. आमची टीम (About Us - Multiple Members CMS) -->
+    <!-- १०. आमची टीम (About Us - Multiple Members CMS) -->
     <div class="section-header">
         <i class="fa-solid fa-users" style="color: #2563EB;"></i> <span style="color: #2563EB;">आमची टीम (Team CMS)</span>
     </div>
@@ -371,11 +453,17 @@
 
     <!-- JavaScript For Admin Logic -->
     <script>
-        // 🆕 सपोर्ट टीम मेंबर्स साठवण्यासाठी Array
         let supportTeamMembers = [];
 
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
+            
+            // Set Default Dates to current month
+            let now = new Date();
+            let firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            document.getElementById('report-start-date').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('report-end-date').value = now.toISOString().split('T')[0];
+
             loadAdminDashboardStats();
             loadSettingsFromFirebase();
             loadPendingProperties();
@@ -410,24 +498,142 @@
             }
         }
 
-        // --- २. Load and Save Master Settings (Firebase) ---
+        // --- 🆕 २. Report Generation & Download Logic With Custom Date Picker ---
+        function getSelectedDateRange() {
+            let startVal = document.getElementById('report-start-date').value;
+            let endVal = document.getElementById('report-end-date').value;
+            
+            if(!startVal || !endVal) {
+                return null; // Both dates not selected, will fetch all time
+            }
+            
+            // Set start of day for start date, end of day for end date
+            let startDate = new Date(startVal);
+            startDate.setHours(0, 0, 0, 0);
+            
+            let endDate = new Date(endVal);
+            endDate.setHours(23, 59, 59, 999);
+
+            return { start: startDate.toISOString(), end: endDate.toISOString(), titleStr: `${startVal}_to_${endVal}` };
+        }
+
+        async function downloadReport(reportType) {
+            if(typeof db === 'undefined') { alert("Firebase Connected नाही!"); return; }
+            
+            let dateRange = getSelectedDateRange();
+            let dateTitle = dateRange ? dateRange.titleStr : "All_Time";
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            try {
+                if(reportType === 'revenue') {
+                    csvContent += "Payment ID,User ID,Amount (Rs),Plan Type,Status,Date\r\n";
+                    let query = db.collection("payments");
+                    if(dateRange) { query = query.where("createdAt", ">=", dateRange.start).where("createdAt", "<=", dateRange.end); }
+                    
+                    let snap = await query.get();
+                    snap.forEach(doc => {
+                        let d = doc.data();
+                        let date = d.createdAt ? new Date(d.createdAt).toLocaleDateString() : 'N/A';
+                        csvContent += `"${doc.id}","${d.userId || ''}","${d.amount || 0}","${d.planType || 'Unlock'}","${d.status || ''}","${date}"\r\n`;
+                    });
+                } 
+                else if(reportType === 'users') {
+                    csvContent += "User ID,Name,Mobile,Role,Registered On\r\n";
+                    let query = db.collection("users");
+                    if(dateRange) { query = query.where("createdAt", ">=", dateRange.start).where("createdAt", "<=", dateRange.end); }
+
+                    let snap = await query.get();
+                    snap.forEach(doc => {
+                        let d = doc.data();
+                        let date = d.createdAt ? new Date(d.createdAt).toLocaleDateString() : 'N/A';
+                        csvContent += `"${doc.id}","${d.name || ''}","${d.mobile || ''}","${d.role || ''}","${date}"\r\n`;
+                    });
+                }
+                else if(reportType === 'properties') {
+                    csvContent += "Property ID,Title,Owner,Type,Taluka,Area,Rent,Status,Plan,Created Date\r\n";
+                    let query = db.collection("properties");
+                    if(dateRange) { query = query.where("createdAt", ">=", dateRange.start).where("createdAt", "<=", dateRange.end); }
+
+                    let snap = await query.get();
+                    snap.forEach(doc => {
+                        let d = doc.data();
+                        let date = d.createdAt ? new Date(d.createdAt).toLocaleDateString() : 'N/A';
+                        csvContent += `"${doc.id}","${d.title || ''}","${d.ownerName || ''}","${d.type || ''}","${d.taluka || ''}","${d.area || ''}","${d.rent || 0}","${d.status || ''}","${d.planType || 'basic'}","${date}"\r\n`;
+                    });
+                }
+                else if(reportType === 'leads') {
+                    csvContent += "Property ID,Title,Owner Mobile,Total Views,Total Leads Generated,Created Date\r\n";
+                    let query = db.collection("properties");
+                    if(dateRange) { query = query.where("createdAt", ">=", dateRange.start).where("createdAt", "<=", dateRange.end); }
+
+                    let snap = await query.get();
+                    snap.forEach(doc => {
+                        let d = doc.data();
+                        let date = d.createdAt ? new Date(d.createdAt).toLocaleDateString() : 'N/A';
+                        csvContent += `"${doc.id}","${d.title || ''}","${d.ownerMobile || ''}","${d.views || 0}","${d.leads || 0}","${date}"\r\n`;
+                    });
+                }
+                else if(reportType === 'expired_plans') {
+                    csvContent += "Property ID,Title,Owner Name,Owner Mobile,Plan Type,Expired On Date\r\n";
+                    let query = db.collection("properties");
+                    let snap = await query.get();
+                    let now = new Date();
+                    
+                    snap.forEach(doc => {
+                        let d = doc.data();
+                        if (d.planType && d.planType !== 'basic' && d.expiryDate && d.expiryDate !== 'Lifetime') {
+                            let expiryTime = new Date(d.expiryDate);
+                            let isExpired = false;
+                            
+                            if (now > expiryTime) {
+                                if (!dateRange) {
+                                    isExpired = true; 
+                                } else {
+                                    let startRange = new Date(dateRange.start);
+                                    let endRange = new Date(dateRange.end);
+                                    if (expiryTime >= startRange && expiryTime <= endRange) {
+                                        isExpired = true;
+                                    }
+                                }
+                            }
+
+                            if (isExpired) {
+                                let formattedExpiryDate = expiryTime.toLocaleDateString();
+                                csvContent += `"${doc.id}","${d.title || ''}","${d.ownerName || ''}","${d.ownerMobile || ''}","${d.planType}","${formattedExpiryDate}"\r\n`;
+                            }
+                        }
+                    });
+                }
+
+                // Create download link
+                let encodedUri = encodeURI(csvContent);
+                let link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `${reportType}_report_${dateTitle}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } catch (error) {
+                console.error("Error generating report: ", error);
+                alert("रिपोर्ट बनवताना एरर आला. Firebase Indexing आवश्यक असू शकते.");
+            }
+        }
+
+        // --- ३. Load and Save Master Settings ---
         function loadSettingsFromFirebase() {
             if(typeof db !== 'undefined') {
                 db.collection("admin_settings").doc("master_config").get().then((doc) => {
                     if(doc.exists) {
                         let data = doc.data();
-                        
                         document.getElementById('manual-approval-toggle').checked = data.manualPropertyApproval || false;
-                        
                         if(data.plans) {
                             document.getElementById('plan1-fee').value = data.plans.plan1_fee || 299;
                             document.getElementById('plan1-validity').value = data.plans.plan1_validity || 15;
                             document.getElementById('plan2-fee').value = data.plans.plan2_fee || 399;
                             document.getElementById('plan2-validity').value = data.plans.plan2_validity || 30;
                         }
-                        
                         document.getElementById('tenant-unlock-fee').value = data.tenantUnlockFee || 20;
-
                         if(data.support) {
                             document.getElementById('support-number').value = data.support.phone || "9579535290";
                             document.getElementById('support-email').value = data.support.email || "support@satararentalhub.com";
@@ -440,10 +646,8 @@
         function toggleManualApproval(checkbox) {
             let isManualOn = checkbox.checked;
             if(typeof db !== 'undefined') {
-                db.collection("admin_settings").doc("master_config").set({
-                    manualPropertyApproval: isManualOn
-                }, { merge: true }).then(() => {
-                    alert(isManualOn ? "मॅन्युअल ॲप्रूव्हल चालू (ON) झाले आहे. आता नवीन प्रॉपर्टीज थेट लाईव्ह होणार नाहीत." : "मॅन्युअल ॲप्रूव्हल बंद (OFF) झाले आहे. आता नवीन प्रॉपर्टीज थेट ॲपवर लाईव्ह दिसतील.");
+                db.collection("admin_settings").doc("master_config").set({ manualPropertyApproval: isManualOn }, { merge: true }).then(() => {
+                    alert(isManualOn ? "मॅन्युअल ॲप्रूव्हल चालू (ON) झाले आहे." : "मॅन्युअल ॲप्रूव्हल बंद (OFF) झाले आहे.");
                 });
             }
         }
@@ -454,31 +658,22 @@
             let p2Fee = document.getElementById('plan2-fee').value;
             let p2Val = document.getElementById('plan2-validity').value;
 
-            if(!p1Fee || !p1Val || !p2Fee || !p2Val) { alert("कृपया सर्व प्रीमियम प्लॅन्सची माहिती भरा."); return; }
+            if(!p1Fee || !p1Val || !p2Fee || !p2Val) { alert("कृपया सर्व माहिती भरा."); return; }
 
             if(typeof db !== 'undefined') {
                 db.collection("admin_settings").doc("master_config").set({
-                    plans: {
-                        plan1_fee: Number(p1Fee),
-                        plan1_validity: Number(p1Val),
-                        plan2_fee: Number(p2Fee),
-                        plan2_validity: Number(p2Val)
-                    }
-                }, { merge: true }).then(() => {
-                    alert("✅ मालकांचे प्रीमियम प्लॅन्स आणि मुदत यशस्वीरीत्या अपडेट केली!");
-                });
+                    plans: { plan1_fee: Number(p1Fee), plan1_validity: Number(p1Val), plan2_fee: Number(p2Fee), plan2_validity: Number(p2Val) }
+                }, { merge: true }).then(() => { alert("✅ प्लॅन्स अपडेट केले!"); });
             }
         }
 
         function saveTenantFee() {
             let tFee = document.getElementById('tenant-unlock-fee').value;
-            if(tFee === "") { alert("कृपया फीची रक्कम टाका."); return; }
+            if(tFee === "") { alert("कृपया फी टाका."); return; }
 
             if(typeof db !== 'undefined') {
-                db.collection("admin_settings").doc("master_config").set({
-                    tenantUnlockFee: Number(tFee)
-                }, { merge: true }).then(() => {
-                    alert(`✅ भाडेकरूंसाठी संपर्क फी ₹${tFee} सेट केली!`);
+                db.collection("admin_settings").doc("master_config").set({ tenantUnlockFee: Number(tFee) }, { merge: true }).then(() => {
+                    alert(`✅ फी ₹${tFee} सेट केली!`);
                 });
             }
         }
@@ -492,19 +687,15 @@
                 btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Saving...";
                 btn.disabled = true;
 
-                db.collection("admin_settings").doc("master_config").set({
-                    support: { phone: phone, email: email }
-                }, { merge: true }).then(() => {
+                db.collection("admin_settings").doc("master_config").set({ support: { phone: phone, email: email } }, { merge: true }).then(() => {
                     alert("✅ सपोर्ट डिटेल्स अपडेट केले!");
                     btn.innerHTML = "<i class='fa-solid fa-floppy-disk'></i> सपोर्ट डिटेल्स सेव्ह करा";
-                    btn.disabled = false;
-                }).catch(() => {
                     btn.disabled = false;
                 });
             }
         }
 
-        // --- ३. Load Pending Properties For Approval ---
+        // --- ४. Load Pending Properties ---
         function loadPendingProperties() {
             let container = document.getElementById('admin_pending_properties_list');
             if(typeof db !== 'undefined') {
@@ -516,22 +707,17 @@
                     let html = '';
                     snap.forEach(doc => {
                         let p = doc.data();
-                        let premiumBadge = (p.planType === 'premium1' || p.planType === 'premium2') ? `<span style="background:#8B5CF6; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Top Ad</span>` : `<span style="background:#64748B; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Free Listing</span>`;
+                        let premiumBadge = (p.planType === 'premium1' || p.planType === 'premium2') ? `<span style="background:#8B5CF6; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Top Ad</span>` : `<span style="background:#64748B; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Free</span>`;
                         
                         html += `
                         <div class="action-card" id="pending_prop_${doc.id}">
                             <div class="action-header">
-                                <div>
-                                    <div class="action-title">${p.title || 'Property'} (${p.type}) ${premiumBadge}</div>
-                                    <div class="action-subtitle"><i class="fa-solid fa-user"></i> मालक: ${p.ownerName} (${p.ownerMobile})</div>
-                                </div>
+                                <div><div class="action-title">${p.title || 'Property'} ${premiumBadge}</div><div class="action-subtitle"><i class="fa-solid fa-user"></i> ${p.ownerName} (${p.ownerMobile})</div></div>
                                 <div class="action-price">₹ ${p.rent}</div>
                             </div>
-                            <div class="action-subtitle" style="margin-bottom: 5px;"><i class="fa-solid fa-location-dot"></i> ${p.area}, ${p.taluka}</div>
-                            
                             <div class="btn-group">
                                 <button class="btn btn-reject" onclick="rejectProperty('${doc.id}')"><i class="fa-solid fa-xmark"></i> रद्द करा</button>
-                                <button class="btn btn-approve" onclick="approveProperty('${doc.id}')"><i class="fa-solid fa-check"></i> मंजूर करा (Live)</button>
+                                <button class="btn btn-approve" onclick="approveProperty('${doc.id}')"><i class="fa-solid fa-check"></i> मंजूर करा</button>
                             </div>
                         </div>`;
                     });
@@ -541,68 +727,109 @@
         }
 
         function approveProperty(propId) {
-            if(confirm("ही प्रॉपर्टी तपासून झाली आहे का? ती ॲपवर लाईव्ह करायची का?")) {
+            if(confirm("ही प्रॉपर्टी लाईव्ह करायची का?")) {
                 db.collection("properties").doc(propId).update({ status: 'live' }).then(() => {
-                    alert("✅ प्रॉपर्टी ॲपवर लाईव्ह झाली आहे!");
-                    loadPendingProperties();
-                    loadAdminDashboardStats();
+                    alert("✅ प्रॉपर्टी ॲपवर लाईव्ह झाली!"); loadPendingProperties(); loadAdminDashboardStats();
                 });
             }
         }
 
         function rejectProperty(propId) {
-            if(confirm("ही प्रॉपर्टी डिलीट/रद्द करायची आहे का?")) {
+            if(confirm("ही प्रॉपर्टी रद्द/डिलीट करायची का?")) {
                 db.collection("properties").doc(propId).delete().then(() => {
-                    alert("❌ प्रॉपर्टी रद्द केली आणि डिलीट केली.");
-                    loadPendingProperties();
-                    loadAdminDashboardStats();
+                    alert("❌ प्रॉपर्टी रद्द केली."); loadPendingProperties(); loadAdminDashboardStats();
                 });
             }
         }
 
-        // --- ४. Flash Ad Management ---
+        // --- 🆕 ५. Flash Ads (With Direct Image Upload Logic) ---
+        let selectedAdFile = null;
+
+        function previewAdImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                selectedAdFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('ad-image-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         function loadAdSettings() {
             if(typeof db !== 'undefined') {
                 db.collection("admin_settings").doc("ads_config").get().then((doc) => {
                     if(doc.exists && doc.data().flashAd) {
                         document.getElementById('flash-ad-text').value = doc.data().flashAd.text || '';
                         document.getElementById('flash-ad-link').value = doc.data().flashAd.link || '';
+                        
+                        if(doc.data().flashAd.imageUrl) {
+                            document.getElementById('flash-ad-image-url').value = doc.data().flashAd.imageUrl;
+                            const preview = document.getElementById('ad-image-preview');
+                            preview.src = doc.data().flashAd.imageUrl;
+                            preview.style.display = 'block';
+                        }
                     }
                 });
             }
         }
 
-        function publishFlashAd() {
+        async function publishFlashAd() {
             let text = document.getElementById('flash-ad-text').value;
             let link = document.getElementById('flash-ad-link').value;
+            let currentImgUrl = document.getElementById('flash-ad-image-url').value;
+
             if(!text) { alert("कृपया फ्लॅश ॲडचा मजकूर भरा!"); return; }
 
-            if(typeof db !== 'undefined') {
-                db.collection("admin_settings").doc("ads_config").set({
-                    flashAd: { text: text, link: link, active: true }
-                }, { merge: true }).then(() => {
-                    alert("⚡ फ्लॅश जाहिरात ॲपवर लाईव्ह झाली आहे!");
-                });
+            const btn = document.getElementById('publish-ad-btn');
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Uploading...";
+            btn.disabled = true;
+
+            try {
+                // If a new file is selected, upload it to Firebase Storage first
+                if(selectedAdFile && typeof firebase.storage !== 'undefined') {
+                    const storageRef = firebase.storage().ref();
+                    const fileRef = storageRef.child(`admin_ads/flash_ad_${Date.now()}`);
+                    const snapshot = await fileRef.put(selectedAdFile);
+                    currentImgUrl = await snapshot.ref.getDownloadURL();
+                }
+
+                if(typeof db !== 'undefined') {
+                    await db.collection("admin_settings").doc("ads_config").set({ 
+                        flashAd: { text: text, link: link, imageUrl: currentImgUrl, active: true }
+                    }, { merge: true });
+                    
+                    alert("⚡ फ्लॅश जाहिरात आणि फोटो ॲपवर लाईव्ह झाली!");
+                }
+            } catch(e) {
+                console.log("Error uploading Ad", e);
+                alert("जाहिरात सेव्ह करताना एरर आला. Firebase Storage चालू आहे का तपासा.");
+            } finally {
+                btn.innerHTML = "सेव्ह करा";
+                btn.disabled = false;
             }
         }
 
         function removeFlashAd() {
             if(confirm("फ्लॅश जाहिरात काढून टाकायची आहे का?")) {
                 if(typeof db !== 'undefined') {
-                    db.collection("admin_settings").doc("ads_config").set({
-                        flashAd: { active: false }
-                    }, { merge: true }).then(() => {
-                        document.getElementById('flash-ad-text').value = '';
-                        document.getElementById('flash-ad-link').value = '';
-                        alert("🗑️ फ्लॅश जाहिरात काढून टाकली आहे.");
+                    db.collection("admin_settings").doc("ads_config").set({ flashAd: { active: false } }, { merge: true }).then(() => {
+                        document.getElementById('flash-ad-text').value = ''; 
+                        document.getElementById('flash-ad-link').value = ''; 
+                        document.getElementById('flash-ad-image-url').value = ''; 
+                        document.getElementById('ad-image-preview').style.display = 'none';
+                        selectedAdFile = null;
+                        alert("🗑️ जाहिरात काढून टाकली.");
                     });
                 }
             }
         }
 
-        // --- 🆕 ५. Team CMS Management (Multiple Members Support via Firebase) ---
+        // --- ६. Team CMS ---
         function loadTeamDataCMS() {
-            // Load Founder from Firebase
             if(typeof db !== 'undefined') {
                 db.collection("settings").doc("founder").get().then((doc) => {
                     if(doc.exists) {
@@ -611,112 +838,46 @@
                         document.getElementById('founder-role').value = data.role || '';
                         document.getElementById('founder-bio').value = data.bio || '';
                     }
-                }).catch(e => console.log("Error loading Founder:", e));
-            }
-            
-            // Load Multiple Support Team Members from Firebase instead of LocalStorage
-            if(typeof db !== 'undefined') {
+                });
                 db.collection("settings").doc("teamData").get().then((doc) => {
-                    if (doc.exists && doc.data().members) {
-                        supportTeamMembers = doc.data().members;
-                        renderTeamMembersList();
-                    }
-                }).catch(e => console.log("Error loading Team Data:", e));
+                    if (doc.exists && doc.data().members) { supportTeamMembers = doc.data().members; renderTeamMembersList(); }
+                });
             }
         }
 
-        // Add New Member to Array
         function addTeamMember() {
             let mName = document.getElementById('new-team-name').value.trim();
             let mRole = document.getElementById('new-team-role').value.trim();
             let mBio = document.getElementById('new-team-bio').value.trim();
 
-            if(mName === "" || mRole === "") {
-                alert("कृपया सपोर्ट मेंबरचे नाव आणि पद (Role) टाका.");
-                return;
-            }
-
-            let newMember = {
-                id: Date.now().toString(),
-                name: mName,
-                role: mRole,
-                bio: mBio
-            };
-
-            supportTeamMembers.push(newMember);
-            
-            // Clear inputs
-            document.getElementById('new-team-name').value = '';
-            document.getElementById('new-team-role').value = '';
-            document.getElementById('new-team-bio').value = '';
-
+            if(mName === "" || mRole === "") { alert("कृपया नाव आणि पद टाका."); return; }
+            supportTeamMembers.push({ id: Date.now().toString(), name: mName, role: mRole, bio: mBio });
+            document.getElementById('new-team-name').value = ''; document.getElementById('new-team-role').value = ''; document.getElementById('new-team-bio').value = '';
             renderTeamMembersList();
         }
 
-        // Remove Member from Array
-        function removeTeamMember(id) {
-            supportTeamMembers = supportTeamMembers.filter(member => member.id !== id);
-            renderTeamMembersList();
-        }
+        function removeTeamMember(id) { supportTeamMembers = supportTeamMembers.filter(member => member.id !== id); renderTeamMembersList(); }
 
-        // Render List on Screen
         function renderTeamMembersList() {
-            const listContainer = document.getElementById('added-team-members-list');
-            listContainer.innerHTML = '';
-
-            if(supportTeamMembers.length === 0) {
-                listContainer.innerHTML = '<div style="font-size:12px; color:#94A3B8; text-align:center; padding:10px;">अजून कोणताही मेंबर ॲड केलेला नाही.</div>';
-                return;
-            }
-
+            const listContainer = document.getElementById('added-team-members-list'); listContainer.innerHTML = '';
+            if(supportTeamMembers.length === 0) { listContainer.innerHTML = '<div style="font-size:12px; color:#94A3B8; text-align:center; padding:10px;">कोणताही मेंबर नाही.</div>'; return; }
             supportTeamMembers.forEach(member => {
-                let html = `
-                <div class="team-member-item">
-                    <div class="team-member-info">
-                        <h4><i class="fa-solid fa-user"></i> ${member.name} (${member.role})</h4>
-                        <p>${member.bio}</p>
-                    </div>
-                    <button class="btn-delete-member" onclick="removeTeamMember('${member.id}')"><i class="fa-solid fa-trash"></i></button>
-                </div>`;
-                listContainer.innerHTML += html;
+                listContainer.innerHTML += `<div class="team-member-item"><div class="team-member-info"><h4><i class="fa-solid fa-user"></i> ${member.name} (${member.role})</h4></div><button class="btn-delete-member" onclick="removeTeamMember('${member.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
             });
         }
 
-        // Save everything to Firebase
         function publishTeamContent() {
-            let fName = document.getElementById('founder-name').value.trim();
-            let fRole = document.getElementById('founder-role').value.trim();
-            let fBio = document.getElementById('founder-bio').value.trim();
+            let fName = document.getElementById('founder-name').value.trim(); let fRole = document.getElementById('founder-role').value.trim(); let fBio = document.getElementById('founder-bio').value.trim();
+            if(fName === "" || fRole === "") { alert("कृपया संस्थापकाचे नाव आणि पद भरा."); return; }
+            const btn = document.getElementById('publish-team-btn'); btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Saving..."; btn.disabled = true;
 
-            if(fName === "" || fRole === "") {
-                alert("कृपया संस्थापकाचे नाव आणि पद भरा.");
-                return;
-            }
-
-            const btn = document.getElementById('publish-team-btn');
-            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Saving...";
-            btn.disabled = true;
-
-            // Save Founder and Team to Firebase
             if(typeof db !== 'undefined') {
                 Promise.all([
-                    db.collection("settings").doc("founder").set({
-                        name: fName, role: fRole, bio: fBio, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true }),
-                    db.collection("settings").doc("teamData").set({
-                        members: supportTeamMembers, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true })
-                ]).then(() => {
-                    alert("✅ टीमची माहिती यशस्वीरित्या अपडेट झाली आहे!");
-                    btn.innerHTML = "<i class='fa-solid fa-floppy-disk'></i> <span>संपूर्ण टीम माहिती सेव्ह करा</span>";
-                    btn.disabled = false;
-                }).catch((e) => {
-                    console.log(e);
-                    btn.disabled = false;
-                });
+                    db.collection("settings").doc("founder").set({ name: fName, role: fRole, bio: fBio, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }),
+                    db.collection("settings").doc("teamData").set({ members: supportTeamMembers, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+                ]).then(() => { alert("✅ टीम अपडेट झाली!"); btn.innerHTML = "<i class='fa-solid fa-floppy-disk'></i> <span>सेव्ह करा</span>"; btn.disabled = false; });
             }
         }
-
     </script>
 </body>
 </html>

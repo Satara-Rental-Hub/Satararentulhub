@@ -160,7 +160,7 @@
         </div>
     </div>
 
-    <!-- 🆕 पेंडिंग ॲप्रूव्हल अलर्ट (फक्त मालकाला दिसेल) -->
+    <!-- पेंडिंग ॲप्रूव्हल अलर्ट (फक्त मालकाला दिसेल) -->
     <div id="pendingAlert" class="pending-alert">
         <i class="fa-solid fa-clock"></i> ही प्रॉपर्टी ॲडमिन मंजुरीची वाट पाहत आहे.
     </div>
@@ -184,7 +184,7 @@
             <div class="deposit-amt"><small data-lang="deposit_lbl">डिपॉझिट</small> ₹ <span id="prop-deposit-display">...</span></div>
         </div>
 
-        <!-- 🆕 हायलाईट्स (Updated for Furniture, Category & Target) -->
+        <!-- हायलाईट्स -->
         <div class="highlights-grid">
             <div class="highlight-item">
                 <i class="fa-solid fa-building"></i>
@@ -293,7 +293,7 @@
             document.getElementById("displayFee").innerText = `₹ ${currentUnlockFee}`;
         }
 
-        // २. Firebase मधून प्रॉपर्टीची माहिती लोड करणे
+        // २. Firebase मधून प्रॉपर्टीची माहिती लोड करणे आणि 🆕 ऑटो-एक्सपायर तपासणे
         function loadPropertyDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const propId = urlParams.get('id');
@@ -309,6 +309,16 @@
                     if (doc.exists) {
                         propertyData = doc.data();
                         propertyData.id = doc.id;
+
+                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Logic)
+                        if (propertyData.planType && propertyData.planType !== 'basic' && propertyData.expiryDate && propertyData.expiryDate !== 'Lifetime') {
+                            let now = new Date();
+                            let expiryTime = new Date(propertyData.expiryDate);
+                            if (now > expiryTime) {
+                                // जर वेळ संपली असेल, तर प्लॅन 'basic' मानला जावा (टॅग दिसणार नाही)
+                                propertyData.planType = 'basic';
+                            }
+                        }
 
                         // Check if property is pending and user is not owner
                         if(propertyData.status === "pending" && propertyData.ownerId !== currentUserId) {
@@ -361,7 +371,7 @@
             let locationText = (data.area || "") + ", " + (data.taluka || "");
             document.getElementById('prop-location-display').innerText = locationText;
 
-            // 🆕 Highlights (Updated)
+            // Highlights
             document.getElementById('highlight-type').innerText = data.type || "-";
             document.getElementById('highlight-tenant').innerText = data.targetTenant || "सर्वांसाठी";
             document.getElementById('highlight-taluka').innerText = data.taluka || "-";
@@ -381,34 +391,29 @@
             // Owner Name
             document.getElementById('owner-name-display').innerText = data.ownerName || "घरमालक";
 
-            // Premium Badge Check
-            if(data.planType === 'premium1' || data.planType === 'premium2') {
-                document.getElementById('premiumBadge').style.display = 'block';
-            }
+            // 🆕 Premium Badge Display (Now dependent on expiry check)
+            let isPremium = (data.planType === 'premium1' || data.planType === 'premium2');
 
             // Gallery Images
             let galleryContainer = document.getElementById('property-gallery');
             if(data.photoUrls && data.photoUrls.length > 0) {
-                let isPremium = (data.planType === 'premium1' || data.planType === 'premium2');
                 galleryContainer.innerHTML = `<div id="premiumBadge" class="badge-premium" style="display:${isPremium ? 'block' : 'none'};"><i class="fa-solid fa-crown"></i> Premium</div>`;
                 data.photoUrls.forEach(url => {
                     galleryContainer.innerHTML += `<div class="gallery-item"><img src="${url}"></div>`;
                 });
             }
 
-            // 🆕 Amenities (Updated dynamic load)
+            // Amenities
             let amenitiesContainer = document.getElementById('prop-amenities-display');
             amenitiesContainer.innerHTML = '';
             let hasAnyAmenity = false;
 
-            // New logic using amenitiesLabels array
             if(data.amenitiesLabels && data.amenitiesLabels.length > 0) {
                 data.amenitiesLabels.forEach(lbl => {
                     amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> ${lbl}</div>`;
                     hasAnyAmenity = true;
                 });
             } else if(data.amenities) {
-                // Fallback logic for older properties without amenitiesLabels
                 if(data.amenities.water) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> २४ तास पाणी</div>`; hasAnyAmenity = true; }
                 if(data.amenities.parking) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> पार्किंग</div>`; hasAnyAmenity = true; }
                 if(data.amenities.lift) { amenitiesContainer.innerHTML += `<div class="amenity-chip"><i class="fa-solid fa-check"></i> लिफ्ट</div>`; hasAnyAmenity = true; }

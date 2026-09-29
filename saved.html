@@ -202,6 +202,17 @@
                         if(doc.exists) {
                             let prop = doc.data();
                             prop.id = doc.id;
+
+                            // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Logic)
+                            if (prop.planType && prop.planType !== 'basic' && prop.expiryDate && prop.expiryDate !== 'Lifetime') {
+                                let now = new Date();
+                                let expiryTime = new Date(prop.expiryDate);
+                                if (now > expiryTime) {
+                                    // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
+                                    prop.planType = 'basic';
+                                }
+                            }
+
                             renderPropertyCard(prop);
                             loadedCount++;
                             updateHeaderCount(loadedCount);
@@ -235,7 +246,7 @@
                 ? `<img src="${prop.photoUrls[0]}" alt="${prop.title}">` 
                 : `<i class="fa-regular fa-image"></i>`;
 
-            // Premium Badge Logic (जर ॲडमिनने प्रीमियम प्लॅन दिला असेल)
+            // Premium Badge Logic (जर ॲडमिनने प्रीमियम प्लॅन दिला असेल आणि तो एक्सपायर झाला नसेल)
             let badgeHtml = (prop.planType === 'premium1' || prop.planType === 'premium2')
                 ? `<div class="badge-premium"><i class="fa-solid fa-crown"></i> Premium</div>` 
                 : ``;

@@ -147,7 +147,6 @@
             <input type="text" id="searchInput" placeholder="परिसर, गाव किंवा नाव शोधा..." data-lang-placeholder="search_placeholder" onkeyup="filterProperties()">
         </div>
         <div class="filter-row">
-            <!-- 🛠️ UPDATE: Values are now standard English strings. Display text uses data-lang -->
             <select class="filter-select" id="talukaFilter" onchange="filterProperties()">
                 <option value="" data-lang="all_talukas">सर्व तालुके</option>
                 <option value="satara" data-lang="taluka_satara">सातारा</option>
@@ -179,7 +178,7 @@
                 <option value="godown" data-lang="opt_godown">गोडाऊन</option>
             </select>
 
-            <!-- 🆕 फर्निचर फिल्टर -->
+            <!-- फर्निचर फिल्टर -->
             <select class="filter-select" id="furnishFilter" onchange="filterProperties()">
                 <option value="" data-lang="all_furnishing">सर्व फर्निचर (All Furnishing)</option>
                 <option value="Fully-Furnished" data-lang="opt_fully_furnished">Fully Furnished</option>
@@ -187,7 +186,7 @@
                 <option value="Unfurnished" data-lang="opt_unfurnished">Unfurnished</option>
             </select>
 
-            <!-- 🆕 कॅटेगरी फिल्टर (Residential / Commercial) -->
+            <!-- कॅटेगरी फिल्टर (Residential / Commercial) -->
             <select class="filter-select" id="categoryFilter" onchange="filterProperties()">
                 <option value="" data-lang="all_categories">सर्व श्रेणी (All Categories)</option>
                 <option value="residential" data-lang="opt_residential">रहिवासी (Residential)</option>
@@ -279,14 +278,26 @@
             fetchPropertiesFromFirebase();
         };
 
-        // १. Firebase मधून सर्व "Live" प्रॉपर्टीज फेच करणे
+        // १. Firebase मधून सर्व "Live" प्रॉपर्टीज फेच करणे (आणि प्रीमियम एक्सपायरी तपासणे)
         function fetchPropertiesFromFirebase() {
             if(typeof db !== 'undefined') {
                 db.collection("properties").where("status", "==", "live").get().then((querySnapshot) => {
                     allProperties = [];
+                    let now = new Date();
+
                     querySnapshot.forEach(doc => { 
                         let d = doc.data(); 
                         d.id = doc.id; 
+
+                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Check)
+                        if (d.planType && d.planType !== 'basic' && d.expiryDate && d.expiryDate !== 'Lifetime') {
+                            let expiryTime = new Date(d.expiryDate);
+                            if (now > expiryTime) {
+                                // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
+                                d.planType = 'basic';
+                            }
+                        }
+
                         allProperties.push(d); 
                     });
 
@@ -348,9 +359,7 @@
             filteredProperties = allProperties.filter(prop => {
                 let matchSearch = prop.title.toLowerCase().includes(searchTerm) || prop.area.toLowerCase().includes(searchTerm) || prop.taluka.toLowerCase().includes(searchTerm);
                 
-                // 🛠️ Check standard value (e.g. 'satara') against selected value
                 let matchTaluka = selectedTaluka === "" || (prop.taluka && prop.taluka.toLowerCase() === selectedTaluka);
-                
                 let matchType = selectedType === "" || (prop.type && prop.type.toLowerCase() === selectedType);
                 let matchFurnish = selectedFurnish === "" || (prop.furnishingStatus && prop.furnishingStatus === selectedFurnish);
                 let matchCategory = selectedCategory === "" || (prop.propertyCategory && prop.propertyCategory === selectedCategory);

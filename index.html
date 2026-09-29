@@ -762,7 +762,7 @@
             }
         }
 
-        // २. Firebase मधून सर्व 'Live' प्रॉपर्टीज लोड करणे
+        // २. Firebase मधून सर्व 'Live' प्रॉपर्टीज लोड करणे (आणि प्रीमियम एक्सपायरी तपासणे)
         function loadRecentProperties() {
             if(typeof db !== 'undefined') {
                 // 'status == live' असलेल्या लेटेस्ट १० प्रॉपर्टीज
@@ -774,10 +774,36 @@
                         return;
                     }
 
-                    // Sort locally since we need order by date but queried by status
                     let propsList = [];
-                    querySnapshot.forEach(doc => { let d = doc.data(); d.id = doc.id; propsList.push(d); });
-                    propsList.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    let now = new Date();
+
+                    querySnapshot.forEach(doc => { 
+                        let d = doc.data(); 
+                        d.id = doc.id; 
+
+                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Check on Index)
+                        if (d.planType && d.planType !== 'basic' && d.expiryDate && d.expiryDate !== 'Lifetime') {
+                            let expiryTime = new Date(d.expiryDate);
+                            if (now > expiryTime) {
+                                // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
+                                d.planType = 'basic';
+                            }
+                        }
+
+                        propsList.push(d); 
+                    });
+
+                    // Sort locally: Premium first, then date
+                    propsList.sort((a,b) => {
+                        let aIsPremium = (a.planType === 'premium1' || a.planType === 'premium2') ? 1 : 0;
+                        let bIsPremium = (b.planType === 'premium1' || b.planType === 'premium2') ? 1 : 0;
+                        
+                        if(bIsPremium !== aIsPremium) {
+                            return bIsPremium - aIsPremium; 
+                        } else {
+                            return new Date(b.createdAt) - new Date(a.createdAt); 
+                        }
+                    });
 
                     propsContainer.innerHTML = '';
                     
@@ -786,10 +812,16 @@
                             ? `<img src="${prop.photoUrls[0]}" alt="${prop.title}">` 
                             : `<i class="fa-regular fa-image"></i>`;
 
-                        // Premium Tag Logic (जर प्लॅन premium1 किंवा premium2 असेल तरच मुकुट दिसेल)
+                        // Premium Tag Logic
                         let badgeHtml = (prop.planType === 'premium1' || prop.planType === 'premium2')
                             ? `<div class="property-badge"><i class="fa-solid fa-crown"></i> Premium</div>` 
                             : ``;
+
+                        let talukaText = prop.taluka;
+                        let currentLang = localStorage.getItem('appLang') || 'mr';
+                        if(translations && translations[currentLang] && translations[currentLang][`taluka_${prop.taluka}`]) {
+                            talukaText = translations[currentLang][`taluka_${prop.taluka}`];
+                        }
 
                         let propHtml = `
                         <a href="details.html?id=${prop.id}" class="property-card">
@@ -799,7 +831,7 @@
                             </div>
                             <div class="property-info">
                                 <div class="property-title">${prop.title}</div>
-                                <div class="property-meta"><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${prop.taluka}</div>
+                                <div class="property-meta"><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${talukaText}</div>
                                 <div class="property-facilities">
                                     <span class="facility-item"><i class="fa-solid fa-bed"></i> 1 Bed</span>
                                     <span class="facility-item"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>
