@@ -19,12 +19,12 @@
     
     <style>
         :root {
-            --primary: #f45A0A; /* नवीन दिलेला ऑरेंज कलर कोड */
+            --primary: #f45A0A; 
             --bg-light: #F8F9FA;
-            --text-dark: #0B3B82; /* दिलेल्या कलर कोडनुसार नेव्ही ब्लू (टेक्स्ट व आयकॉन बेससाठी) */
+            --text-dark: #0B3B82; 
             --white: #FFFFFF;
-            --premium: #f45A0A; /* प्रीमियमचा रंग नवीन ऑरेंज केला आहे */
-            --top-bg: #0B3B82; /* दिलेल्या कलर कोडनुसार नेव्ही ब्लू (टॉप हिरो बॅकग्राउंडसाठी) */
+            --premium: #f45A0A; 
+            --top-bg: #0B3B82; 
         }
 
         * {
@@ -41,17 +41,16 @@
             padding-bottom: 80px;
         }
 
-        /* टॉप बार (Hero) - बॅकग्राउंड म्हणून इमेज सेट केली आहे */
+        /* टॉप बार (Hero) */
         .top-hero {
-            background-color: var(--top-bg); /* Fallback color */
-            background-image: url('background.png'); /* तुम्ही सेव्ह केलेली बॅकग्राउंड इमेज */
+            background-color: var(--top-bg); 
+            background-image: url('background.png'); 
             background-size: cover;
-            background-position: center top; /* इमेजची पोझिशन थोडी वरून घेतली आहे */
+            background-position: center top; 
             background-repeat: no-repeat;
             color: var(--white);
-            /* मजकूर आणि इमेज दिसण्यासाठी पुरेशी जागा (Height) दिली आहे */
-            padding: 40px 20px 50px 20px; /* वरून आणि खालून पॅडिंग वाढवली */
-            min-height: 280px; /* उंची थोडी वाढवली */
+            padding: 40px 20px 50px 20px; 
+            min-height: 280px; 
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -60,7 +59,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end; /* घटक खाली आणण्यासाठी */
+            justify-content: flex-end; 
         }
         
         /* About Us आयकॉन */
@@ -71,7 +70,7 @@
             color: var(--white);
             font-size: 20px;
             text-decoration: none;
-            background: rgba(0, 0, 0, 0.4); /* थोडा डार्क बॅकग्राउंड */
+            background: rgba(0, 0, 0, 0.4); 
             border: 1px solid rgba(255,255,255,0.4);
             width: 35px;
             height: 35px;
@@ -82,30 +81,30 @@
             z-index: 10;
         }
 
-        /* भाषा बदलणारे बटण (Top Left) */
+        /* भाषा बदलणारे बटण */
         .lang-toggle-btn {
             position: absolute; top: 22px; left: 20px;
-            background: rgba(0, 0, 0, 0.4); /* थोडा डार्क बॅकग्राउंड */
+            background: rgba(0, 0, 0, 0.4); 
             color: var(--white); 
             border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; 
             border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer;
             z-index: 10;
         }
 
-        /* लोगो पुन्हा दिसण्यासाठी डिस्प्ले ब्लॉक केला आहे आणि अलाईनमेंट सेट केली आहे */
+        /* लोगो */
         .brand-logo {
             width: 60px;
             height: 60px;
             background: var(--white);
             border-radius: 12px;
-            margin-bottom: 15px; /* खालील मजकुरापासून अंतर */
-            margin-top: auto; /* वरून मोकळी जागा सोडण्यासाठी */
+            margin-bottom: 15px; 
+            margin-top: auto; 
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             padding: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* थोडी डार्क शॅडो */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
             z-index: 5;
         }
 
@@ -115,12 +114,12 @@
             object-fit: contain;
         }
 
-        /* मजकूर पुन्हा दिसण्यासाठी डिस्प्ले ब्लॉक केला आहे आणि शॅडो वाढवली आहे */
+        /* टायटल */
         .brand-title {
             font-size: 26px;
             font-weight: 800;
             letter-spacing: 0.5px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5); /* डार्क शॅडो */
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5); 
             z-index: 5;
         }
 
@@ -129,11 +128,11 @@
             opacity: 1;
             margin-top: 5px;
             font-weight: 600;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.8); /* डार्क शॅडो */
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8); 
             z-index: 5;
         }
 
-        /* फ्लॅश ॲड अलर्ट (नवीन) */
+        /* फ्लॅश ॲड अलर्ट */
         .flash-ad-container {
             background: linear-gradient(90deg, #FDE68A, #F59E0B);
             color: #78350F;
@@ -159,9 +158,9 @@
             width: 100%;
             padding: 16px 20px 16px 45px;
             border: none;
-            border-radius: 30px; /* चित्राप्रमाणे गोल */
+            border-radius: 30px; 
             font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* थोडी डार्क शॅडो */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
             outline: none;
             color: var(--text-dark);
         }
@@ -175,14 +174,14 @@
             left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--primary); /* चित्राप्रमाणे ऑरेंज आयकॉन */
+            color: var(--primary); 
             font-size: 16px;
         }
 
         /* काय शोधत आहात (कॅटेगरीज) */
         .section-title {
             padding: 0 20px;
-            font-size: 18px; /* चित्राप्रमाणे मोठा फॉन्ट */
+            font-size: 18px; 
             font-weight: 700;
             margin-bottom: 15px;
             color: var(--text-dark);
@@ -224,7 +223,7 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 10px;
-            background: var(--white); /* चित्राप्रमाणे पांढरा बॅकग्राउंड */
+            background: var(--white); 
             position: relative;
             box-shadow: 0 2px 10px rgba(0,0,0,0.04);
             border: 1px solid #EAEAEA;
@@ -236,7 +235,7 @@
             color: var(--text-dark);
         }
 
-        /* 🆕 Local Ads / Premium Top Banners Slider */
+        /* Local Ads / Premium Top Banners Slider */
         .ads-slider-container { padding: 0 20px 10px 20px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; }
         .ads-slider-container::-webkit-scrollbar { display: none; }
         .ads-wrapper { display: flex; gap: 15px; width: max-content; }
@@ -294,7 +293,7 @@
         }
 
         .grid-view .property-card {
-            margin-bottom: 0; /* ग्रिडमध्ये मार्जिन नको */
+            margin-bottom: 0; 
         }
 
         .property-img {
@@ -309,7 +308,7 @@
         }
         
         .grid-view .property-img {
-            height: 120px; /* ग्रिडमध्ये फोटोची उंची थोडी कमी */
+            height: 120px; 
         }
         
         .property-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -360,11 +359,11 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 12px; /* नवीन अंतर */
+            margin-bottom: 12px; 
         }
         
         .property-meta i {
-            color: var(--primary); /* लोकेशन आयकॉन भगव्या कलरमध्ये */
+            color: var(--primary); 
         }
 
         .grid-view .property-meta {
@@ -382,7 +381,7 @@
 
         .facility-item {
             font-size: 11px;
-            color: var(--primary); /* फॅसिलिटीज आणि आयकॉन्स भगव्या कलरमध्ये */
+            color: var(--primary); 
             display: flex;
             align-items: center;
             gap: 4px;
@@ -435,7 +434,32 @@
             font-size: 10px;
         }
 
-        /* व्यू डिटेल्स भगव्या कलरचा बॉक्स */
+        /* Share Button + View Details Flex Box */
+        .footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* WhatsApp शेअर बटण स्टाईल */
+        .share-inline-btn {
+            background-color: transparent;
+            color: #25D366; /* WhatsApp Green */
+            border: 1px solid #25D366;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .share-inline-btn:hover {
+            background-color: #25D366;
+            color: var(--white);
+        }
+
         .view-details-btn {
             background-color: var(--primary);
             color: var(--white);
@@ -447,8 +471,13 @@
             display: inline-block;
         }
 
-        .grid-view .view-details-btn {
+        .grid-view .footer-actions {
             width: 100%;
+            justify-content: space-between;
+        }
+
+        .grid-view .view-details-btn {
+            flex: 1;
             text-align: center;
             padding: 5px 10px;
         }
@@ -511,7 +540,7 @@
 </head>
 <body>
 
-    <!-- 🆕 फ्लॅश ॲड (पॉप-अप ॲडमिन सेटिंग) -->
+    <!-- फ्लॅश ॲड (पॉप-अप ॲडमिन सेटिंग) -->
     <div id="flash-ad-container" class="flash-ad-container">
         <!-- ॲडमिनचा मेसेज इथे दिसेल -->
     </div>
@@ -631,7 +660,7 @@
         </div>
     </div>
 
-    <!-- 🆕 Top Banners / Premium Ads Slider (Firebase मधून) -->
+    <!-- Top Banners / Premium Ads Slider (Firebase मधून) -->
     <div id="local-ads-section" style="display: none;">
         <div class="section-title"><span style="color: var(--premium);"><i class="fa-solid fa-star"></i> टॉप प्रायॉरिटी लिस्टिंग</span></div>
         <div class="ads-slider-container">
@@ -683,8 +712,8 @@
             if(typeof applySavedLanguage === 'function') {
                 applySavedLanguage();
             }
-            loadAdminAds();         // फ्लॅश आणि टॉप बॅनर ॲड्स (Admin Panels + Premium Users)
-            loadRecentProperties(); // सर्व लाईव्ह प्रॉपर्टीज
+            loadAdminAds();         
+            loadRecentProperties(); 
         };
 
         // व्ह्यू टॉगल फंक्शन (लिस्ट/ग्रीड)
@@ -704,6 +733,26 @@
             }
         }
 
+        // थेट WhatsApp शेअर
+        function sharePropertyCard(propId, propTitle, propRent, propTaluka) {
+            event.preventDefault(); // कार्डवर क्लिक होऊ नये म्हणून
+            
+            let origin = window.location.origin;
+            let pathname = window.location.pathname;
+            let folderPath = pathname.substring(0, pathname.lastIndexOf('/'));
+            let shareUrl = `${origin}${folderPath}/details.html?id=${propId}`;
+            
+            if (!origin || origin.includes("null")) {
+                shareUrl = `https://satararentalhub.com/details.html?id=${propId}`;
+            }
+
+            let shareText = `*${propTitle}* 🏠\n📍 *ठिकाण:* ${propTaluka}\n💰 *भाडे:* ₹${propRent} /महिना\n\nया प्रॉपर्टीची अधिक माहिती पाहण्यासाठी खालील लिंकवर क्लिक करा:\n\n${shareUrl}\n\n*सातारा रेंटल हब* - साताऱ्यातील हक्काचे घर!`;
+            
+            let encodedMsg = encodeURIComponent(shareText);
+            
+            window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
+        }
+
         // १. Firebase मधून 'Flash Ads' आणि 'Premium Banners' लोड करणे
         function loadAdminAds() {
             if(typeof db !== 'undefined') {
@@ -719,7 +768,7 @@
                             : `<i class="fa-solid fa-bolt"></i> ${flashAd.text}`;
                     }
 
-                    // मॅन्युअल बॅनर ॲड (जर ॲडमिनने टाकली असेल)
+                    // मॅन्युअल बॅनर ॲड
                     const adsWrapper = document.getElementById('ads-wrapper');
                     const adsSection = document.getElementById('local-ads-section');
                     let hasBanners = false;
@@ -727,45 +776,100 @@
                     if(doc.exists && doc.data().bannerAd && doc.data().bannerAd.active) {
                         hasBanners = true;
                         let bAd = doc.data().bannerAd;
+                        let defaultLink = bAd.link ? bAd.link : '#'; 
                         adsWrapper.innerHTML += `
-                        <a href="${bAd.link || '#'}" class="ad-banner">
+                        <a href="${defaultLink}" class="ad-banner">
                             <span class="ad-tag"><i class="fa-solid fa-star"></i> Featured</span>
                             <img src="${bAd.imageUrl}" alt="${bAd.title}">
                             <div class="ad-title-overlay">${bAd.title}</div>
                         </a>`;
                     }
 
-                    // 🆕 प्रीमियम प्लॅन घेतलेल्या युजर्सचे ऑटोमॅटिक बॅनर्स
-                    db.collection("admin_settings").doc("premium_banners").get().then((pDoc) => {
-                        if(pDoc.exists) {
-                            let premiumAds = pDoc.data();
-                            for (let key in premiumAds) {
-                                if (premiumAds[key].active) {
-                                    hasBanners = true;
-                                    let bAd = premiumAds[key];
-                                    adsWrapper.innerHTML += `
-                                    <a href="${bAd.link || '#'}" class="ad-banner">
-                                        <span class="ad-tag"><i class="fa-solid fa-crown"></i> Top Ad</span>
-                                        <img src="${bAd.imageUrl}" alt="${bAd.title}">
-                                        <div class="ad-title-overlay">${bAd.title}</div>
-                                    </a>`;
+                    // टॉप प्रायॉरिटी लिस्टिंग
+                    db.collection("properties")
+                      .where("status", "==", "live")
+                      .where("planType", "in", ["premium1", "premium2"])
+                      .get().then((querySnapshot) => {
+                        
+                        let now = new Date();
+                        
+                        querySnapshot.forEach(doc => {
+                            let prop = doc.data();
+                            prop.id = doc.id;
+                            
+                            let isExpired = false;
+                            if (prop.expiryDate && prop.expiryDate !== 'Lifetime') {
+                                let expiryTime = new Date(prop.expiryDate);
+                                if (now > expiryTime) {
+                                    isExpired = true;
                                 }
                             }
-                        }
+                            
+                            if (!isExpired) {
+                                hasBanners = true;
+                                
+                                let bannerImg = (prop.photoUrls && prop.photoUrls.length > 0) ? prop.photoUrls[0] : 'placeholder.jpg';
+                                let adLink = `details.html?id=${prop.id}`;
+                                
+                                adsWrapper.innerHTML += `
+                                <a href="${adLink}" class="ad-banner">
+                                    <span class="ad-tag"><i class="fa-solid fa-crown"></i> Top Ad</span>
+                                    <img src="${bannerImg}" alt="${prop.title}">
+                                    <div class="ad-title-overlay">${prop.title}</div>
+                                </a>`;
+                            }
+                        });
                         
                         if(hasBanners) {
                             adsSection.style.display = 'block';
                         }
-                    });
+                    }).catch(e => console.log("Premium banners fetch error:", e));
 
                 }).catch(e => console.log("Ads loading error:", e));
             }
         }
 
-        // २. Firebase मधून सर्व 'Live' प्रॉपर्टीज लोड करणे (आणि प्रीमियम एक्सपायरी तपासणे)
+        // 🆕 डायनॅमिक सुविधा (Amenities) जनरेट करण्याचे फंक्शन
+        function getAmenitiesHtml(amenitiesLabels) {
+            let html = '';
+            
+            // जर मालकाने सुविधा निवडल्या असतील
+            if (amenitiesLabels && amenitiesLabels.length > 0) {
+                // जास्तीत जास्त 3 सुविधा दाखवा जेणेकरून कार्ड खराब दिसणार नाही
+                let displayCount = Math.min(amenitiesLabels.length, 3);
+                
+                for(let i=0; i<displayCount; i++) {
+                    let lbl = amenitiesLabels[i];
+                    let icon = 'fa-check'; // Default icon
+                    
+                    // आयकॉन्स मॅच करा (मराठी/इंग्रजी नावांनुसार)
+                    if(lbl.includes('पाणी') || lbl.toLowerCase().includes('water')) icon = 'fa-faucet-drip';
+                    else if(lbl.includes('पार्किंग') || lbl.toLowerCase().includes('parking')) icon = 'fa-square-parking';
+                    else if(lbl.includes('लिफ्ट') || lbl.toLowerCase().includes('lift')) icon = 'fa-elevator';
+                    else if(lbl.includes('सुरक्षा') || lbl.toLowerCase().includes('security') || lbl.includes('CCTV')) icon = 'fa-shield-halved';
+                    else if(lbl.includes('वाय-फाय') || lbl.toLowerCase().includes('wifi') || lbl.includes('इंटरनेट')) icon = 'fa-wifi';
+                    else if(lbl.includes('मेस') || lbl.toLowerCase().includes('mess') || lbl.includes('जेवण')) icon = 'fa-utensils';
+                    else if(lbl.includes('पॉवर') || lbl.toLowerCase().includes('power')) icon = 'fa-bolt';
+                    
+                    html += `<span class="facility-item"><i class="fa-solid ${icon}"></i> ${lbl}</span>`;
+                }
+                
+                // जर 3 पेक्षा जास्त सुविधा असतील तर "+X More" दाखवा
+                if (amenitiesLabels.length > 3) {
+                    html += `<span class="facility-item" style="color: #64748B;">+${amenitiesLabels.length - 3} अधिक</span>`;
+                }
+            } 
+            // जर मालकाने कोणतीही सुविधा निवडली नसेल
+            else {
+                html = `<span class="facility-item" style="color: #94A3B8;"><i class="fa-solid fa-circle-info"></i> विशेष सुविधा नमूद नाही</span>`;
+            }
+            
+            return html;
+        }
+
+        // २. Firebase मधून सर्व 'Live' प्रॉपर्टीज लोड करणे
         function loadRecentProperties() {
             if(typeof db !== 'undefined') {
-                // 'status == live' असलेल्या लेटेस्ट १० प्रॉपर्टीज
                 db.collection("properties").where("status", "==", "live").limit(10).get().then((querySnapshot) => {
                     const propsContainer = document.getElementById('properties-container');
                     
@@ -781,19 +885,17 @@
                         let d = doc.data(); 
                         d.id = doc.id; 
 
-                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Check on Index)
-                        if (d.planType && d.planType !== 'basic' && d.expiryDate && d.expiryDate !== 'Lifetime') {
-                            let expiryTime = new Date(d.expiryDate);
-                            if (now > expiryTime) {
-                                // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
-                                d.planType = 'basic';
+                        if (d.status === 'live') {
+                            if (d.planType && d.planType !== 'basic' && d.expiryDate && d.expiryDate !== 'Lifetime') {
+                                let expiryTime = new Date(d.expiryDate);
+                                if (now > expiryTime) {
+                                    d.planType = 'basic';
+                                }
                             }
+                            propsList.push(d); 
                         }
-
-                        propsList.push(d); 
                     });
 
-                    // Sort locally: Premium first, then date
                     propsList.sort((a,b) => {
                         let aIsPremium = (a.planType === 'premium1' || a.planType === 'premium2') ? 1 : 0;
                         let bIsPremium = (b.planType === 'premium1' || b.planType === 'premium2') ? 1 : 0;
@@ -812,7 +914,6 @@
                             ? `<img src="${prop.photoUrls[0]}" alt="${prop.title}">` 
                             : `<i class="fa-regular fa-image"></i>`;
 
-                        // Premium Tag Logic
                         let badgeHtml = (prop.planType === 'premium1' || prop.planType === 'premium2')
                             ? `<div class="property-badge"><i class="fa-solid fa-crown"></i> Premium</div>` 
                             : ``;
@@ -823,6 +924,9 @@
                             talukaText = translations[currentLang][`taluka_${prop.taluka}`];
                         }
 
+                        // 🆕 Dynamic Amenities Injection
+                        let amenitiesHtml = getAmenitiesHtml(prop.amenitiesLabels);
+
                         let propHtml = `
                         <a href="details.html?id=${prop.id}" class="property-card">
                             <div class="property-img">
@@ -832,14 +936,21 @@
                             <div class="property-info">
                                 <div class="property-title">${prop.title}</div>
                                 <div class="property-meta"><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${talukaText}</div>
+                                
                                 <div class="property-facilities">
-                                    <span class="facility-item"><i class="fa-solid fa-bed"></i> 1 Bed</span>
-                                    <span class="facility-item"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>
-                                    <span class="facility-item"><i class="fa-solid fa-bolt"></i> 24x7 Light</span>
+                                    ${amenitiesHtml}
                                 </div>
+                                
                                 <div class="property-footer">
                                     <div class="property-price">₹ ${prop.rent} <small>/ महिना</small></div>
-                                    <div class="view-details-btn">View Details &rarr;</div>
+                                    
+                                    <div class="footer-actions">
+                                        <button class="share-inline-btn" onclick="sharePropertyCard('${prop.id}', '${prop.title.replace(/'/g, "\\'")}', '${prop.rent}', '${talukaText}')" title="Share via WhatsApp">
+                                            <i class="fa-brands fa-whatsapp"></i>
+                                        </button>
+                                        <div class="view-details-btn">View Details &rarr;</div>
+                                    </div>
+
                                 </div>
                             </div>
                         </a>`;
@@ -851,40 +962,8 @@
                     document.getElementById('properties-container').innerHTML = `<div class="loading-state" style="color:red;">डेटा लोड करताना एरर आला.</div>`;
                 });
             } else {
-                // Firebase नसताना लोकल डमी
                 document.getElementById('properties-container').innerHTML = `
-                    <a href="details.html" class="property-card">
-                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Premium</div></div>
-                        <div class="property-info">
-                            <div class="property-title">Boys Hostel - Satara</div>
-                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Powai Naka, Satara</div>
-                            <div class="property-facilities">
-                                <span class="facility-item"><i class="fa-solid fa-bed"></i> Single / Shared</span>
-                                <span class="facility-item"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>
-                                <span class="facility-item"><i class="fa-solid fa-utensils"></i> Mess</span>
-                            </div>
-                            <div class="property-footer">
-                                <div class="property-price">₹4,500 <small>/month</small></div>
-                                <div class="view-details-btn">View Details &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="details.html" class="property-card">
-                        <div class="property-img"><i class="fa-regular fa-image"></i><div class="property-badge">Featured</div></div>
-                        <div class="property-info">
-                            <div class="property-title">2 BHK Flat - Satara</div>
-                            <div class="property-meta"><i class="fa-solid fa-location-dot"></i> Shaniwar Peth, Satara</div>
-                            <div class="property-facilities">
-                                <span class="facility-item"><i class="fa-solid fa-bed"></i> 2 Bedrooms</span>
-                                <span class="facility-item"><i class="fa-solid fa-couch"></i> Living Room</span>
-                                <span class="facility-item"><i class="fa-solid fa-square-parking"></i> Parking</span>
-                            </div>
-                            <div class="property-footer">
-                                <div class="property-price">₹12,000 <small>/month</small></div>
-                                <div class="view-details-btn">View Details &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                    <div class="loading-state">Firebase कनेक्टेड नाही.</div>
                 `;
             }
         }

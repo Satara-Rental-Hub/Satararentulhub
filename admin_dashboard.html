@@ -10,7 +10,7 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <!-- 🆕 Firebase Storage SDK Added for File Uploads -->
+    <!-- Firebase Storage SDK Added for File Uploads -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
     <!-- Firebase Configuration File -->
@@ -85,6 +85,10 @@
             background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04); border-left: 4px solid #F59E0B; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
         }
+        
+        /* 🆕 Live Properties Card Styles */
+        .live-card { border-left-color: #10B981; }
+        
         .action-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
         .action-title { font-size: 15px; font-weight: 700; color: var(--text-dark); }
         .action-subtitle { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; margin-top: 4px;}
@@ -97,7 +101,7 @@
         .btn-reject { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .btn-edit { background: var(--bg-light); color: var(--text-dark); border: 1px solid #CBD5E1; }
         
-        /* 🆕 Report Download Styles & Date Picker */
+        /* Report Download Styles & Date Picker */
         .report-filter { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; background: #E0F2FE; padding: 15px; border-radius: 12px; border: 1px dashed #0284C7; }
         .report-filter label { font-size: 12px; font-weight: 700; color: #0284C7; }
         .date-inputs { display: flex; gap: 10px; align-items: center; }
@@ -132,7 +136,7 @@
         .form-control:focus { border-color: var(--primary); background: var(--white); }
         textarea.form-control { resize: vertical; min-height: 80px; }
         
-        /* 🆕 File Upload Styles */
+        /* File Upload Styles */
         .file-upload-wrapper { position: relative; width: 100%; height: 120px; border: 2px dashed #CBD5E1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #F8FAFC; cursor: pointer; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
         .file-upload-wrapper:hover { border-color: #D97706; background: #FFFBEB; }
         .file-upload-wrapper input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
@@ -206,7 +210,7 @@
         </div>
     </div>
 
-    <!-- 🆕 ३. डेटा आणि रिपोर्ट्स (Reports Downloads with Custom Date Picker) -->
+    <!-- ३. डेटा आणि रिपोर्ट्स (Reports Downloads with Custom Date Picker) -->
     <div class="section-header">
         <span style="color: #0284C7;"><i class="fa-solid fa-file-excel"></i> डेटा रिपोर्ट्स (Downloads)</span>
     </div>
@@ -263,6 +267,17 @@
                     <span class="slider"></span>
                 </label>
             </div>
+        </div>
+    </div>
+
+    <!-- 🆕 ४.१. लाईव्ह प्रॉपर्टीज व्यवस्थापन (Delete Live Properties) -->
+    <div class="section-header">
+        <span style="color: #10B981;"><i class="fa-solid fa-list-check"></i> लाईव्ह प्रॉपर्टीज व्यवस्थापन</span>
+        <span class="badge" style="background:#10B981;" id="live_count_badge">0 लाईव्ह</span>
+    </div>
+    <div class="list-container">
+        <div class="cms-card" style="padding: 15px; max-height: 400px; overflow-y: auto; background: #F8FAFC;" id="admin_live_properties_list">
+            <div style="text-align: center; color: #94A3B8; padding: 20px;">लोड होत आहे...</div>
         </div>
     </div>
 
@@ -330,7 +345,7 @@
         <div style="text-align: center; color: #94A3B8; padding: 20px;">कोणत्याही नवीन प्रॉपर्टीज पेंडिंग नाहीत.</div>
     </div>
 
-    <!-- ८. जाहिरात व्यवस्थापन (🆕 Updated with Direct Image Upload) -->
+    <!-- ८. जाहिरात व्यवस्थापन (Updated with Direct Image Upload) -->
     <div class="section-header">
         <span style="color: #D97706;"><i class="fa-solid fa-rectangle-ad"></i> जाहिरात व्यवस्थापन</span>
     </div>
@@ -344,7 +359,7 @@
             <label class="form-label">लिंक (URL) - युझरने क्लिक केल्यावर कुठे जावे?</label>
             <input type="text" class="form-control" id="flash-ad-link" placeholder="उदा. https://yourlink.com">
 
-            <!-- 🆕 Direct Image Upload Provision -->
+            <!-- Direct Image Upload Provision -->
             <label class="form-label">जाहिरातीचा फोटो निवडा (Image Upload)</label>
             <div class="file-upload-wrapper">
                 <input type="file" id="flash-ad-file" accept="image/png, image/jpeg, image/jpg" onchange="previewAdImage(event)">
@@ -467,6 +482,7 @@
             loadAdminDashboardStats();
             loadSettingsFromFirebase();
             loadPendingProperties();
+            loadLiveProperties(); // 🆕 Load Live properties for deletion
             loadAdSettings();
             loadTeamDataCMS(); 
         };
@@ -488,6 +504,7 @@
                     document.getElementById('live_properties_count').innerText = liveCount;
                     document.getElementById('pending_approvals_count').innerText = pendingCount;
                     document.getElementById('pending_count_badge').innerText = pendingCount + " नवीन";
+                    document.getElementById('live_count_badge').innerText = liveCount + " लाईव्ह"; // Update Live badge
                 }).catch(e => console.log(e));
 
                 db.collection("payments").where("status", "==", "Success").get().then(snap => {
@@ -498,7 +515,7 @@
             }
         }
 
-        // --- 🆕 २. Report Generation & Download Logic With Custom Date Picker ---
+        // --- २. Report Generation & Download Logic With Custom Date Picker ---
         function getSelectedDateRange() {
             let startVal = document.getElementById('report-start-date').value;
             let endVal = document.getElementById('report-end-date').value;
@@ -726,10 +743,60 @@
             }
         }
 
+        // --- 🆕 ४.१ Load Live Properties (For Admin Deletion Feature) ---
+        function loadLiveProperties() {
+            let container = document.getElementById('admin_live_properties_list');
+            if(typeof db !== 'undefined') {
+                db.collection("properties").where("status", "==", "live").get().then(snap => {
+                    if(snap.empty) {
+                        container.innerHTML = '<div style="text-align: center; color: #94A3B8; padding: 20px;">सध्या कोणतीही प्रॉपर्टी ॲपवर लाईव्ह नाही.</div>';
+                        return;
+                    }
+                    let html = '';
+                    snap.forEach(doc => {
+                        let p = doc.data();
+                        let premiumBadge = (p.planType === 'premium1' || p.planType === 'premium2') ? `<span style="background:#8B5CF6; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Top Ad</span>` : `<span style="background:#64748B; color:white; padding:2px 6px; font-size:10px; border-radius:8px; margin-left:5px;">Free</span>`;
+                        
+                        html += `
+                        <div class="action-card live-card" id="live_prop_${doc.id}">
+                            <div class="action-header">
+                                <div><div class="action-title">${p.title || 'Property'} ${premiumBadge}</div><div class="action-subtitle"><i class="fa-solid fa-user"></i> ${p.ownerName} (${p.ownerMobile})</div></div>
+                                <div class="action-price">₹ ${p.rent}</div>
+                            </div>
+                            <div class="action-subtitle" style="margin-bottom: 5px;"><i class="fa-solid fa-location-dot"></i> ${p.area}, ${p.taluka}</div>
+                            
+                            <div class="btn-group">
+                                <!-- 🆕 Admin Delete Provision -->
+                                <button class="btn btn-reject" style="width:100%" onclick="adminDeleteProperty('${doc.id}')"><i class="fa-solid fa-trash"></i> ही प्रॉपर्टी काढून टाका (Delete)</button>
+                            </div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            }
+        }
+
+        // 🆕 Admin Direct Delete Logic
+        function adminDeleteProperty(propId) {
+            if(confirm("तुम्हाला खात्री आहे का? ही प्रॉपर्टी कायमची डिलीट होईल आणि ॲपवरून काढून टाकली जाईल.")) {
+                db.collection("properties").doc(propId).delete().then(() => {
+                    alert("❌ प्रॉपर्टी यशस्वीरित्या डिलीट केली."); 
+                    loadLiveProperties(); 
+                    loadAdminDashboardStats();
+                }).catch(e => {
+                    console.log("Delete error", e);
+                    alert("प्रॉपर्टी डिलीट करताना एरर आला.");
+                });
+            }
+        }
+
         function approveProperty(propId) {
             if(confirm("ही प्रॉपर्टी लाईव्ह करायची का?")) {
                 db.collection("properties").doc(propId).update({ status: 'live' }).then(() => {
-                    alert("✅ प्रॉपर्टी ॲपवर लाईव्ह झाली!"); loadPendingProperties(); loadAdminDashboardStats();
+                    alert("✅ प्रॉपर्टी ॲपवर लाईव्ह झाली!"); 
+                    loadPendingProperties(); 
+                    loadLiveProperties();
+                    loadAdminDashboardStats();
                 });
             }
         }
@@ -742,7 +809,7 @@
             }
         }
 
-        // --- 🆕 ५. Flash Ads (With Direct Image Upload Logic) ---
+        // --- ५. Flash Ads (With Direct Image Upload Logic) ---
         let selectedAdFile = null;
 
         function previewAdImage(event) {

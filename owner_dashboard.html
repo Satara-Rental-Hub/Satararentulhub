@@ -109,10 +109,10 @@
         .mini-stat span { display: block; font-size: 14px; font-weight: 800; color: var(--text-dark); }
         .mini-stat small { font-size: 10px; color: var(--text-muted); }
 
-        .prop-actions { display: flex; gap: 10px; }
-        .btn-action { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; text-align: center; text-decoration: none; border: 1px solid transparent; transition: 0.2s; cursor: pointer; }
+        /* बटन्सची मांडणी */
+        .btn-action { padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; text-align: center; border: 1px solid transparent; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;}
+        .btn-action:active { transform: scale(0.97); }
         .btn-edit { background: var(--bg-light); color: var(--text-dark); border-color: var(--border); }
-        .btn-boost { background: #FFFBEB; color: #D97706; border-color: #FDE68A; display: flex; align-items: center; justify-content: center; gap: 5px; }
 
         /* ----------------------------------------------------
            नवीन सबस्क्रिप्शन प्लॅन्स स्टाईल (Dynamic Area)
@@ -231,13 +231,9 @@
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
             
-            // Check Session
             if(localStorage.getItem("currentUserId")) {
                 currentUserId = localStorage.getItem("currentUserId");
-            } else {
-                // If not logged in, redirect (Optional, based on your flow)
-                // window.location.href = "login.html";
-            }
+            } 
             
             loadUserData();
             loadMyProperties();
@@ -255,7 +251,6 @@
                             document.getElementById('owner-profile-pic').innerHTML = `<img src="${data.photoUrl}">`;
                         }
                     } else {
-                        // Fallback to local storage name
                         if(localStorage.getItem("currentUserName")) {
                             document.getElementById('owner-name-display').innerText = localStorage.getItem("currentUserName") + "!";
                         }
@@ -264,7 +259,7 @@
             }
         }
 
-        // २. मालकाच्या स्वतःच्या प्रॉपर्टीज लोड करणे (Firebase Collection Query with Expiry Logic)
+        // २. मालकाच्या स्वतःच्या प्रॉपर्टीज लोड करणे
         function loadMyProperties() {
             const container = document.getElementById("my-properties-container");
             const countEl = document.getElementById("my-ads-count");
@@ -282,7 +277,6 @@
                         return;
                     }
 
-                    // Sort locally since we used 'where' without composite index
                     let properties = [];
                     let now = new Date();
 
@@ -290,15 +284,13 @@
                         let p = doc.data(); 
                         p.id = doc.id; 
 
-                        // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Check)
+                        // प्रीमियम एक्सपायरी चेक
                         if (p.planType && p.planType !== 'basic' && p.expiryDate && p.expiryDate !== 'Lifetime') {
                             let expiryTime = new Date(p.expiryDate);
                             if (now > expiryTime) {
-                                // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
                                 p.planType = 'basic';
                             }
                         }
-
                         properties.push(p);
                     });
                     properties.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -309,16 +301,39 @@
 
                         let imgHtml = (prop.photoUrls && prop.photoUrls.length > 0) ? `<img src="${prop.photoUrls[0]}">` : `<i class="fa-regular fa-image"></i>`;
                         
-                        // Status Logic (Live or Pending)
-                        let statusHtml = prop.status === "live" 
-                            ? `<div class="prop-status status-live"><i class="fa-solid fa-circle-check"></i> <span data-lang="status_live">लाईव्ह</span></div>`
-                            : `<div class="prop-status status-pending"><i class="fa-solid fa-clock"></i> <span data-lang="status_pending">मंजुरी प्रलंबित</span></div>`;
+                        // Status Logic (Live or Pending or Rented)
+                        let statusHtml = '';
+                        if(prop.status === "live") {
+                            statusHtml = `<div class="prop-status status-live"><i class="fa-solid fa-circle-check"></i> <span data-lang="status_live">लाईव्ह</span></div>`;
+                        } else if(prop.status === "rented" || prop.status === "inactive") {
+                            statusHtml = `<div class="prop-status" style="background:#F1F5F9; color:#64748B;"><i class="fa-solid fa-eye-slash"></i> <span>Hidden (Rented)</span></div>`;
+                        } else {
+                            statusHtml = `<div class="prop-status status-pending"><i class="fa-solid fa-clock"></i> <span data-lang="status_pending">मंजुरी प्रलंबित</span></div>`;
+                        }
 
-                        // Premium Badge Check (It will not show if expired because planType changed to basic)
+                        // Premium Badge Check
                         let isPremium = prop.planType === 'premium1' || prop.planType === 'premium2';
                         let premiumBadgeHtml = isPremium ? `<div class="premium-badge"><i class="fa-solid fa-star"></i> Top Ad</div>` : ``;
 
                         let statsOpacity = prop.status === "live" ? "1" : "0.5";
+
+                        // 🆕 नवीन बटण लॉजिक: 
+                        // पहिल्या रांगेत 'एडिट' आणि 'मार्क ॲज रेंटेड (Hide)'
+                        let rentToggleBtn = prop.status === 'live' 
+                            ? `<button class="btn-action" style="flex:1; background:#FFFBEB; color:#D97706; border:1px solid #FDE68A;" onclick="togglePropertyStatus('${prop.id}', 'live')"><i class="fa-solid fa-eye-slash"></i> भाड्याने दिली (Hide)</button>`
+                            : `<button class="btn-action" style="flex:1; background:#DCFCE7; color:#16A34A; border:1px solid #BBF7D0;" onclick="togglePropertyStatus('${prop.id}', 'rented')"><i class="fa-solid fa-eye"></i> लाईव्ह करा</button>`;
+
+                        // दुसऱ्या रांगेत 'अपग्रेड' (फक्त लाईव्ह असेल तरच दिसेल)
+                        let upgradeBtn = '';
+                        if(prop.status === "live") {
+                            upgradeBtn = isPremium 
+                                ? `<div style="width:100%; text-align:center; padding:10px; border-radius:10px; background:#F0FDF4; color:#16A34A; border:1px solid #BBF7D0; font-size:13px; font-weight:700;"><i class="fa-solid fa-check-circle"></i> प्रीमियम ॲक्टिव्ह</div>` 
+                                : `<button class="btn-action" style="width:100%; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; border: none; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);" onclick="window.location.href='add_property.html'"><i class="fa-solid fa-rocket"></i> <span data-lang="btn_boost">अपग्रेड (Top Ad)</span></button>`;
+                        } else if(prop.status === "pending") {
+                            upgradeBtn = `<div style="width:100%; text-align:center; padding:8px; font-size:11px; color:#94A3B8;">ॲडमिनच्या मंजुरीची वाट पहा</div>`;
+                        } else {
+                            upgradeBtn = `<div style="width:100%; text-align:center; padding:8px; border-radius:10px; background:#F1F5F9; color:#64748B; font-size:11px; font-weight:700;">लाईव्ह झाल्यावर अपग्रेड करता येईल</div>`;
+                        }
 
                         let propHtml = `
                         <div class="my-property-card">
@@ -337,13 +352,16 @@
                                 <div class="mini-stat"><span>${prop.leads || 0}</span><small data-lang="stat_leads">कॉल्स</small></div>
                                 <div class="mini-stat"><span>${prop.saved || 0}</span><small data-lang="stat_saved">सेव्ह</small></div>
                             </div>
-                            <div class="prop-actions">
-                                <button class="btn-action btn-edit" onclick="alert('एडिट फीचर लवकरच उपलब्ध होईल!')"><i class="fa-solid fa-pen"></i> <span data-lang="btn_edit">एडिट करा</span></button>
-                                ${prop.status === "live" 
-                                    ? (isPremium ? `<button class="btn-action btn-edit" style="color:var(--success); border-color:var(--success);"><i class="fa-solid fa-check-circle"></i> प्रीमियम ॲक्टिव्ह</button>` : `<button class="btn-action btn-boost" onclick="window.location.href='add_property.html'"><i class="fa-solid fa-rocket"></i> <span data-lang="btn_boost">अपग्रेड (Top Ad)</span></button>`)
-                                    : `<div style="flex:1; text-align:center; font-size:11px; color:#94A3B8; display:flex; align-items:center; justify-content:center;">ॲडमिनच्या मंजुरीची वाट पहा</div>`
-                                }
+                            
+                            <!-- 🆕 Actions Section Updated -->
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <div style="display:flex; gap:10px;">
+                                    <button class="btn-action btn-edit" style="flex:1;" onclick="window.location.href='edit_property.html?id=${prop.id}'"><i class="fa-solid fa-pen"></i> <span data-lang="btn_edit">एडिट</span></button>
+                                    ${rentToggleBtn}
+                                </div>
+                                ${upgradeBtn}
                             </div>
+
                         </div>`;
                         container.innerHTML += propHtml;
                     });
@@ -357,6 +375,29 @@
                 });
             } else {
                 container.innerHTML = `<div class="loading-text">Firebase कनेक्टेड नाही.</div>`;
+            }
+        }
+
+        // 🆕 प्रॉपर्टी लपवणे किंवा लाईव्ह करणे (Status Toggle Logic)
+        function togglePropertyStatus(propId, currentStatus) {
+            let newStatus = (currentStatus === 'live') ? 'rented' : 'live';
+            let confirmMsg = (newStatus === 'rented') 
+                ? "तुम्हाला खात्री आहे का? ही प्रॉपर्टी 'भाड्याने दिली' म्हणून मार्क होईल आणि ॲपवर दिसणे बंद होईल."
+                : "ही प्रॉपर्टी पुन्हा ॲपवर सर्वांना 'लाईव्ह' दाखवायची आहे का?";
+            
+            if(confirm(confirmMsg)) {
+                if(typeof db !== 'undefined') {
+                    db.collection("properties").doc(propId).update({
+                        status: newStatus,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        alert("✅ स्टेटस यशस्वीरित्या बदलले!");
+                        loadMyProperties(); // Reload immediately to reflect UI change
+                    }).catch(e => {
+                        console.log(e);
+                        alert("एरर आला! कृपया पुन्हा प्रयत्न करा.");
+                    });
+                }
             }
         }
 

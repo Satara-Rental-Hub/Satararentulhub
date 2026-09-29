@@ -152,7 +152,7 @@
 
     <!-- टॉप बार (Back Button & Actions) -->
     <div class="top-bar">
-        <a href="listing.html" class="icon-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i></a>
+        <button class="icon-btn" id="backBtn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
         <div style="display: flex; gap: 10px; align-items: center;">
             <button class="lang-toggle-btn" onclick="toggleLanguage()">ENG / मराठी</button>
             <button class="icon-btn" onclick="shareProperty()"><i class="fa-solid fa-share-nodes"></i></button>
@@ -263,15 +263,23 @@
 
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
-            
-            // Back button logic
-            if (document.referrer.includes("owner_dashboard")) {
-                document.getElementById("backBtn").href = "owner_dashboard.html";
-            }
 
             fetchUnlockFeeFromFirebase();
             loadPropertyDetails();
         };
+        
+        // डायनॅमिक बॅक बटण लॉजिक (युझर कुठून आलाय त्यानुसार)
+        function goBack() {
+            if (document.referrer.includes("saved.html")) {
+                window.location.href = "saved.html";
+            } else if (document.referrer.includes("owner_dashboard.html")) {
+                window.location.href = "owner_dashboard.html";
+            } else if (document.referrer.includes("index.html")) {
+                window.location.href = "index.html";
+            } else {
+                window.location.href = "listing.html";
+            }
+        }
 
         // १. Firebase मधून ॲडमिनने सेट केलेली फी वाचणे
         function fetchUnlockFeeFromFirebase() {
@@ -293,7 +301,7 @@
             document.getElementById("displayFee").innerText = `₹ ${currentUnlockFee}`;
         }
 
-        // २. Firebase मधून प्रॉपर्टीची माहिती लोड करणे आणि 🆕 ऑटो-एक्सपायर तपासणे
+        // २. Firebase मधून प्रॉपर्टीची माहिती लोड करणे आणि ऑटो-एक्सपायर तपासणे
         function loadPropertyDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const propId = urlParams.get('id');
@@ -329,7 +337,7 @@
 
                         populateUI(propertyData);
                         
-                        // Property Views Update
+                        // 🆕 Property Views Update Logic (This guarantees views are recorded exactly when page loads completely)
                         if(propertyData.ownerId !== currentUserId) {
                             db.collection("properties").doc(propId).update({
                                 views: firebase.firestore.FieldValue.increment(1)
@@ -352,6 +360,14 @@
         // ३. मिळालेली माहिती UI वर दाखवणे
         function populateUI(data) {
             document.getElementById('loadingScreen').style.display = 'none';
+
+            // Check if saved
+            let savedProps = JSON.parse(localStorage.getItem('userWishlist')) || [];
+            if(savedProps.includes(data.id)) {
+                let favBtn = document.getElementById('favBtn');
+                favBtn.classList.add('active');
+                favBtn.style.color = '#E74C3C';
+            }
 
             // Pending Alert
             if(data.status === "pending" && data.ownerId === currentUserId) {
@@ -391,7 +407,7 @@
             // Owner Name
             document.getElementById('owner-name-display').innerText = data.ownerName || "घरमालक";
 
-            // 🆕 Premium Badge Display (Now dependent on expiry check)
+            // Premium Badge Display (Now dependent on expiry check)
             let isPremium = (data.planType === 'premium1' || data.planType === 'premium2');
 
             // Gallery Images
@@ -438,7 +454,7 @@
             }
         }
 
-        // ४. पेमेंट आणि अनलॉक लॉजिक
+        // ४. पेमेंट आणि अनलॉक लॉजिक (Leads Update Logic here)
         function processPayment() {
             if(!propertyData) return;
 
@@ -458,6 +474,7 @@
                     localStorage.setItem('unlockedProperties', JSON.stringify(unlockedProps));
                 }
                 
+                // 🆕 Leads Update Logic (This guarantees lead count increases securely when payment is made)
                 if(typeof db !== 'undefined') {
                     db.collection("properties").doc(propertyData.id).update({
                         leads: firebase.firestore.FieldValue.increment(1)
@@ -523,9 +540,24 @@
             btn.classList.toggle('active');
             if(btn.classList.contains('active')) {
                 btn.style.color = '#E74C3C';
+                // 🆕 Save Property
+                if(propertyData) {
+                    let savedProps = JSON.parse(localStorage.getItem('userWishlist')) || [];
+                    if(!savedProps.includes(propertyData.id)) {
+                        savedProps.push(propertyData.id);
+                        localStorage.setItem('userWishlist', JSON.stringify(savedProps));
+                    }
+                }
                 alert("प्रॉपर्टी सेव्ह केली!");
             } else {
                 btn.style.color = 'var(--text-dark)';
+                // 🆕 Remove Property
+                if(propertyData) {
+                    let savedProps = JSON.parse(localStorage.getItem('userWishlist')) || [];
+                    savedProps = savedProps.filter(id => id !== propertyData.id);
+                    localStorage.setItem('userWishlist', JSON.stringify(savedProps));
+                }
+                alert("प्रॉपर्टी आवडीतून काढली!");
             }
         }
     </script>

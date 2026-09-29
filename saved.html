@@ -80,6 +80,45 @@
         .property-meta-row { display: flex; gap: 15px; margin-bottom: 5px; font-size: 13px; color: var(--text-muted); font-weight: 600; }
         .property-meta-row i { color: var(--primary); width: 16px; text-align: center; }
 
+        /* 🆕 Share Button + View Details Flex Box (For Saved Page) */
+        .footer-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border);
+            padding-top: 15px;
+        }
+        
+        .share-inline-btn {
+            background-color: transparent;
+            color: #25D366; 
+            border: 1px solid #25D366;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .share-inline-btn:hover {
+            background-color: #25D366;
+            color: var(--white);
+        }
+
+        .view-details-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
         /* लोडिंग आणि एम्प्टी स्टेट (Empty State) */
         .loading-state { text-align: center; padding: 40px 20px; color: #94A3B8; font-size: 14px; font-weight: 600; }
         
@@ -171,6 +210,26 @@
             loadSavedProperties();
         };
 
+        // 🆕 थेट WhatsApp शेअर (Fixed Clickable Link Logic for Saved Page)
+        function sharePropertyCard(propId, propTitle, propRent, propTaluka) {
+            event.preventDefault(); // कार्डवर क्लिक होऊ नये म्हणून
+            
+            let origin = window.location.origin;
+            let pathname = window.location.pathname;
+            let folderPath = pathname.substring(0, pathname.lastIndexOf('/'));
+            let shareUrl = `${origin}${folderPath}/details.html?id=${propId}`;
+            
+            if (!origin || origin.includes("null")) {
+                shareUrl = `https://satararentalhub.com/details.html?id=${propId}`;
+            }
+
+            let shareText = `*${propTitle}* 🏠\n📍 *ठिकाण:* ${propTaluka}\n💰 *भाडे:* ₹${propRent} /महिना\n\nया प्रॉपर्टीची अधिक माहिती पाहण्यासाठी खालील लिंकवर क्लिक करा:\n\n ${shareUrl} \n\n*सातारा रेंटल हब* - साताऱ्यातील हक्काचे घर!`;
+            
+            let encodedMsg = encodeURIComponent(shareText);
+            
+            window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
+        }
+
         // जर युझर घरमालक (Owner) असेल, तर 'ॲड' बटणाची लिंक add_property.html ठेवा
         function updateAddButtonLink() {
             let role = localStorage.getItem("currentUserRole");
@@ -203,19 +262,25 @@
                             let prop = doc.data();
                             prop.id = doc.id;
 
-                            // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Logic)
-                            if (prop.planType && prop.planType !== 'basic' && prop.expiryDate && prop.expiryDate !== 'Lifetime') {
-                                let now = new Date();
-                                let expiryTime = new Date(prop.expiryDate);
-                                if (now > expiryTime) {
-                                    // मुदत संपली असल्यास प्लॅन बेसिक करून टाकणे
-                                    prop.planType = 'basic';
+                            // फक्त live प्रॉपर्टीजच दाखवा, जर ओनरने लपवली असेल (rented) तर ती सेव्हड मधून सुद्धा हटेल
+                            if(prop.status === 'live') {
+                                // 🆕 ऑटोमॅटिक प्रीमियम एक्सपायरी चेक (Auto-Expire Logic)
+                                if (prop.planType && prop.planType !== 'basic' && prop.expiryDate && prop.expiryDate !== 'Lifetime') {
+                                    let now = new Date();
+                                    let expiryTime = new Date(prop.expiryDate);
+                                    if (now > expiryTime) {
+                                        prop.planType = 'basic';
+                                    }
                                 }
+
+                                renderPropertyCard(prop);
+                                loadedCount++;
+                                updateHeaderCount(loadedCount);
+                            } else {
+                                // जर स्टेटस लाईव्ह नसेल (म्हणजे rented किंवा inactive असेल), तर लोकल स्टोरेज मधून काढा
+                                removePropertyIdFromLocal(propId);
                             }
 
-                            renderPropertyCard(prop);
-                            loadedCount++;
-                            updateHeaderCount(loadedCount);
                         } else {
                             // जर प्रॉपर्टी Firebase मधून डिलीट झाली असेल, तर ती लोकल स्टोरेजमधून पण काढा
                             removePropertyIdFromLocal(propId);
@@ -251,6 +316,13 @@
                 ? `<div class="badge-premium"><i class="fa-solid fa-crown"></i> Premium</div>` 
                 : ``;
 
+            // Convert stored taluka value to display language text
+            let talukaText = prop.taluka;
+            let currentLang = localStorage.getItem('appLang') || 'mr';
+            if(translations && translations[currentLang] && translations[currentLang][`taluka_${prop.taluka}`]) {
+                talukaText = translations[currentLang][`taluka_${prop.taluka}`];
+            }
+
             let propHtml = `
             <a href="details.html?id=${prop.id}" class="property-card" id="card_${prop.id}">
                 <div class="property-img">
@@ -262,7 +334,15 @@
                     <div class="property-title">${prop.title}</div>
                     <div class="property-price">₹ ${prop.rent} <small data-lang="per_month">/ महिना</small></div>
                     <div class="property-meta-row">
-                        <span><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${prop.taluka}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${prop.area}, ${talukaText}</span>
+                    </div>
+
+                    <!-- 🆕 Share Button and View Details -->
+                    <div class="footer-actions">
+                        <button class="share-inline-btn" onclick="sharePropertyCard('${prop.id}', '${prop.title.replace(/'/g, "\\'")}', '${prop.rent}', '${talukaText}')" title="Share via WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </button>
+                        <div class="view-details-btn">View Details &rarr;</div>
                     </div>
                 </div>
             </a>`;
