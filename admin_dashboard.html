@@ -86,7 +86,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.04); border-left: 4px solid #F59E0B; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
         }
         
-        /* 🆕 Live Properties Card Styles */
         .live-card { border-left-color: #10B981; }
         
         .action-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
@@ -143,7 +142,6 @@
         .file-upload-content { text-align: center; pointer-events: none; }
         .file-upload-content i { font-size: 30px; color: #94A3B8; margin-bottom: 5px; display: block; }
         .file-upload-content span { font-size: 12px; color: #64748B; font-weight: 600; }
-        #ad-image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 5; }
 
         .btn-publish { background: #166534; color: var(--white); border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; box-shadow: 0 4px 15px rgba(22, 101, 52, 0.2); transition: 0.2s; }
         .btn-publish:active { transform: scale(0.97); }
@@ -160,6 +158,34 @@
         .team-member-info h4 { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
         .team-member-info p { font-size: 11px; color: var(--text-muted); }
         .btn-delete-member { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; }
+
+        /* 🆕 Hero Slider Images Grid styling */
+        .slider-images-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .slider-img-box {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #CBD5E1;
+        }
+        .slider-img-box img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        }
+        .delete-slide-btn {
+            position: absolute;
+            top: 5px; right: 5px;
+            background: rgba(239, 68, 68, 0.9); color: white;
+            border: none; width: 25px; height: 25px; border-radius: 50%;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 12px; z-index: 10;
+        }
 
         /* Bottom Navigation */
         .bottom-nav {
@@ -207,6 +233,42 @@
             <i class="fa-solid fa-indian-rupee-sign stat-icon" style="color: #10B981;"></i>
             <div class="stat-val" id="total_revenue_amount">₹ 0</div>
             <div class="stat-title" data-lang="month_revenue">एकूण कमाई</div>
+        </div>
+    </div>
+
+    <!-- 🆕 २.१ होम पेज स्लायडर सेटिंग्ज (Hero Slider Manager) -->
+    <div class="section-header">
+        <span style="color: #2563EB;"><i class="fa-solid fa-images"></i> होमपेज स्लायडर सेटिंग्ज</span>
+    </div>
+    <div class="list-container">
+        <div class="cms-card">
+            <h3 class="cms-header-title" style="color: #2563EB; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">हिरो बॅकग्राऊंड इमेजेस (Hero Slider)</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">इथे टाकलेल्या इमेजेस होमपेजवर बॅकग्राऊंडला आपोआप बदलत राहतील.</p>
+            
+            <label class="form-label">फोटो स्लाईड होण्याची वेळ (Timer)</label>
+            <div style="position: relative; margin-bottom: 15px;">
+                <input type="number" class="form-control" id="slider-timer" value="3000" placeholder="उदा. 3000">
+                <span style="position: absolute; right: 15px; top: 12px; font-size: 12px; color: #94A3B8; font-weight:bold;">मिलीसेकंद (1000 = 1 sec)</span>
+            </div>
+
+            <label class="form-label">नवीन फोटो अपलोड करा (Multiple Select)</label>
+            <div class="file-upload-wrapper">
+                <input type="file" id="hero-slider-files" accept="image/png, image/jpeg, image/jpg" multiple onchange="uploadHeroSliderImages(event)">
+                <div class="file-upload-content">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span id="slider-upload-status">इथे क्लिक करून फोटो निवडा</span>
+                </div>
+            </div>
+
+            <label class="form-label">सध्याच्या स्लायडर इमेजेस (Current Images)</label>
+            <div class="slider-images-grid" id="current-slider-images">
+                <!-- Javascript will load images here -->
+                <div style="grid-column: span 3; text-align: center; color: #94A3B8; font-size: 12px; padding: 10px;">लोड होत आहे...</div>
+            </div>
+
+            <button class="btn-publish" style="background: #2563EB; margin-top: 15px;" onclick="saveSliderTimer()">
+                <i class="fa-solid fa-floppy-disk"></i> <span>वेळ सेव्ह करा</span>
+            </button>
         </div>
     </div>
 
@@ -270,7 +332,7 @@
         </div>
     </div>
 
-    <!-- 🆕 ४.१. लाईव्ह प्रॉपर्टीज व्यवस्थापन (Delete Live Properties) -->
+    <!-- ४.१. लाईव्ह प्रॉपर्टीज व्यवस्थापन (Delete Live Properties) -->
     <div class="section-header">
         <span style="color: #10B981;"><i class="fa-solid fa-list-check"></i> लाईव्ह प्रॉपर्टीज व्यवस्थापन</span>
         <span class="badge" style="background:#10B981;" id="live_count_badge">0 लाईव्ह</span>
@@ -345,13 +407,14 @@
         <div style="text-align: center; color: #94A3B8; padding: 20px;">कोणत्याही नवीन प्रॉपर्टीज पेंडिंग नाहीत.</div>
     </div>
 
-    <!-- ८. जाहिरात व्यवस्थापन (Updated with Direct Image Upload) -->
+    <!-- ८. जाहिरात व्यवस्थापन (UPDATED: Mobile & Desktop Image Uploads) -->
     <div class="section-header">
         <span style="color: #D97706;"><i class="fa-solid fa-rectangle-ad"></i> जाहिरात व्यवस्थापन</span>
     </div>
     <div class="list-container">
         <div class="cms-card">
-            <h3 class="cms-header-title" style="color: #D97706; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;"><i class="fa-solid fa-bolt"></i> फ्लॅश ॲड (Flash Ad)</h3>
+            <h3 class="cms-header-title" style="color: #D97706; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;"><i class="fa-solid fa-bolt"></i> वेलकम फ्लॅश ॲड (Welcome Flash Ad)</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">ही जाहिरात युझरने ॲप/वेबसाईट उघडल्यावर लगेच फुल स्क्रीनवर दिसेल. (Skip बटण युझर ॲपमध्ये आपोआप दिसेल)</p>
             
             <label class="form-label">जाहिरातीचा मजकूर (Ad Text)</label>
             <input type="text" class="form-control" id="flash-ad-text" placeholder="उदा. नवीन 2BHK फ्लॅट्स उपलब्ध! २०% सूट">
@@ -359,18 +422,32 @@
             <label class="form-label">लिंक (URL) - युझरने क्लिक केल्यावर कुठे जावे?</label>
             <input type="text" class="form-control" id="flash-ad-link" placeholder="उदा. https://yourlink.com">
 
-            <!-- Direct Image Upload Provision -->
-            <label class="form-label">जाहिरातीचा फोटो निवडा (Image Upload)</label>
-            <div class="file-upload-wrapper">
-                <input type="file" id="flash-ad-file" accept="image/png, image/jpeg, image/jpg" onchange="previewAdImage(event)">
-                <div class="file-upload-content">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>गॅलरीतून फोटो निवडा</span>
+            <div class="grid-2">
+                <div>
+                    <label class="form-label">मोबाईलसाठी फोटो (उभी स्क्रीन)</label>
+                    <div class="file-upload-wrapper" style="height: 160px;">
+                        <input type="file" id="flash-ad-file-mobile" accept="image/png, image/jpeg, image/jpg" onchange="previewAdImage(event, 'mobile')">
+                        <div class="file-upload-content">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <span>मोबाईल फोटो निवडा</span>
+                        </div>
+                        <img id="ad-image-preview-mobile" alt="Mobile Ad Preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: rgba(0,0,0,0.8); display: none; z-index: 5;">
+                    </div>
+                    <input type="hidden" id="flash-ad-image-url-mobile">
                 </div>
-                <img id="ad-image-preview" alt="Ad Preview">
+                <div>
+                    <label class="form-label">कम्प्युटरसाठी फोटो (आडवी स्क्रीन)</label>
+                    <div class="file-upload-wrapper" style="height: 160px;">
+                        <input type="file" id="flash-ad-file-desktop" accept="image/png, image/jpeg, image/jpg" onchange="previewAdImage(event, 'desktop')">
+                        <div class="file-upload-content">
+                            <i class="fa-solid fa-desktop"></i>
+                            <span>कम्प्युटर फोटो निवडा</span>
+                        </div>
+                        <img id="ad-image-preview-desktop" alt="Desktop Ad Preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: rgba(0,0,0,0.8); display: none; z-index: 5;">
+                    </div>
+                    <input type="hidden" id="flash-ad-image-url-desktop">
+                </div>
             </div>
-            <!-- Hidden input to store existing or newly uploaded URL -->
-            <input type="hidden" id="flash-ad-image-url">
             
             <div class="grid-2">
                 <button class="btn-publish" id="publish-ad-btn" style="background: #D97706; margin-top: 5px; padding: 12px;" onclick="publishFlashAd()">सेव्ह करा</button>
@@ -423,7 +500,6 @@
 
             <h3 style="font-size: 14px; margin-bottom: 10px; color: #10B981;"><i class="fa-solid fa-users"></i> सपोर्ट टीमची माहिती (Multiple)</h3>
             
-            <!-- नवीन मेंबर ॲड करण्यासाठी फॉर्म -->
             <div style="background: #ECFDF5; padding: 15px; border-radius: 12px; border: 1px solid #A7F3D0; margin-bottom: 15px;">
                 <label class="form-label">नाव</label>
                 <input type="text" class="form-control" id="new-team-name" placeholder="उदा. कस्टमर सपोर्ट">
@@ -435,7 +511,6 @@
                 <button class="btn-edit" style="width: 100%; background: #10B981; color: white; border: none; font-weight: bold;" onclick="addTeamMember()"><i class="fa-solid fa-user-plus"></i> मेंबर ॲड करा</button>
             </div>
 
-            <!-- ॲड केलेले मेंबर्सची यादी -->
             <div id="added-team-members-list">
                 <!-- Javascript द्वारे इथे लिस्ट तयार होईल -->
             </div>
@@ -469,11 +544,11 @@
     <!-- JavaScript For Admin Logic -->
     <script>
         let supportTeamMembers = [];
+        let heroSliderImagesArr = []; // 🆕 For Slider
 
         window.onload = function() {
             if(typeof applySavedLanguage === 'function') { applySavedLanguage(); }
             
-            // Set Default Dates to current month
             let now = new Date();
             let firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
             document.getElementById('report-start-date').value = firstDay.toISOString().split('T')[0];
@@ -482,10 +557,130 @@
             loadAdminDashboardStats();
             loadSettingsFromFirebase();
             loadPendingProperties();
-            loadLiveProperties(); // 🆕 Load Live properties for deletion
+            loadLiveProperties(); 
             loadAdSettings();
             loadTeamDataCMS(); 
+            loadHeroSliderConfig(); // 🆕 Load existing slider configs
         };
+
+        // --- 🆕 Slider Config Logic ---
+        function loadHeroSliderConfig() {
+            if(typeof db !== 'undefined') {
+                db.collection("admin_settings").doc("hero_slider").get().then((doc) => {
+                    if(doc.exists) {
+                        let data = doc.data();
+                        if(data.interval) document.getElementById('slider-timer').value = data.interval;
+                        if(data.images && data.images.length > 0) {
+                            heroSliderImagesArr = data.images;
+                        }
+                        renderCurrentSliderImages();
+                    } else {
+                        document.getElementById('current-slider-images').innerHTML = '<div style="grid-column: span 3; text-align: center; color: #94A3B8; font-size: 12px; padding: 10px;">एकही इमेज अपलोड केलेली नाही. (डीफॉल्ट इमेज दिसेल)</div>';
+                    }
+                }).catch(e => console.log("Error fetching slider config", e));
+            }
+        }
+
+        function renderCurrentSliderImages() {
+            const container = document.getElementById('current-slider-images');
+            container.innerHTML = '';
+
+            if (heroSliderImagesArr.length === 0) {
+                container.innerHTML = '<div style="grid-column: span 3; text-align: center; color: #94A3B8; font-size: 12px; padding: 10px;">एकही इमेज अपलोड केलेली नाही.</div>';
+                return;
+            }
+
+            heroSliderImagesArr.forEach((imgUrl, index) => {
+                let html = `
+                <div class="slider-img-box">
+                    <button class="delete-slide-btn" onclick="deleteSliderImage(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <img src="${imgUrl}" alt="Slider Image">
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function deleteSliderImage(index) {
+            if(confirm("ही इमेज स्लायडरमधून डिलीट करायची का?")) {
+                heroSliderImagesArr.splice(index, 1);
+                renderCurrentSliderImages();
+                saveSliderToFirebase(); // Auto save when deleted
+            }
+        }
+
+        async function uploadHeroSliderImages(event) {
+            const files = event.target.files;
+            if(!files || files.length === 0) return;
+
+            if(typeof db === 'undefined' || typeof firebase.storage === 'undefined') {
+                alert("Firebase Storage कनेक्टेड नाही.");
+                return;
+            }
+
+            let statusText = document.getElementById('slider-upload-status');
+            statusText.innerText = "अपलोड होत आहे... कृपया थांबा";
+            statusText.style.color = "#E65C00";
+
+            const storageRef = firebase.storage().ref();
+            let newUrls = [];
+
+            try {
+                for(let i=0; i<files.length; i++) {
+                    let file = files[i];
+                    let fileRef = storageRef.child(`hero_slider_images/slide_${Date.now()}_${i}`);
+                    let snapshot = await fileRef.put(file);
+                    let url = await snapshot.ref.getDownloadURL();
+                    newUrls.push(url);
+                }
+
+                // Add to existing array
+                heroSliderImagesArr = heroSliderImagesArr.concat(newUrls);
+                
+                // Keep max 10 images to avoid overload
+                if(heroSliderImagesArr.length > 10) {
+                    heroSliderImagesArr = heroSliderImagesArr.slice(heroSliderImagesArr.length - 10);
+                }
+
+                renderCurrentSliderImages();
+                await saveSliderToFirebase();
+                
+                statusText.innerText = "यशस्वीरित्या अपलोड झाले!";
+                statusText.style.color = "#10B981";
+                document.getElementById('hero-slider-files').value = ""; // clear input
+                
+                setTimeout(() => {
+                    statusText.innerText = "इथे क्लिक करून फोटो निवडा";
+                    statusText.style.color = "#64748B";
+                }, 3000);
+
+            } catch (e) {
+                console.log("Slider upload error", e);
+                alert("इमेजेस अपलोड करताना एरर आला.");
+                statusText.innerText = "अपलोड फेल!";
+                statusText.style.color = "#EF4444";
+            }
+        }
+
+        function saveSliderTimer() {
+            let timerVal = document.getElementById('slider-timer').value;
+            if(!timerVal || timerVal < 1000) {
+                alert("कमीत कमी १००० मिलीसेकंद (१ सेकंद) वेळ असणे आवश्यक आहे.");
+                return;
+            }
+            saveSliderToFirebase(timerVal);
+            alert("✅ वेळ सेव्ह केली.");
+        }
+
+        async function saveSliderToFirebase(timerOverride = null) {
+            if(typeof db !== 'undefined') {
+                let intervalVal = timerOverride || document.getElementById('slider-timer').value || 3000;
+                await db.collection("admin_settings").doc("hero_slider").set({
+                    interval: parseInt(intervalVal),
+                    images: heroSliderImagesArr,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            }
+        }
 
         // --- १. Load Dashboard Stats ---
         function loadAdminDashboardStats() {
@@ -504,7 +699,7 @@
                     document.getElementById('live_properties_count').innerText = liveCount;
                     document.getElementById('pending_approvals_count').innerText = pendingCount;
                     document.getElementById('pending_count_badge').innerText = pendingCount + " नवीन";
-                    document.getElementById('live_count_badge').innerText = liveCount + " लाईव्ह"; // Update Live badge
+                    document.getElementById('live_count_badge').innerText = liveCount + " लाईव्ह"; 
                 }).catch(e => console.log(e));
 
                 db.collection("payments").where("status", "==", "Success").get().then(snap => {
@@ -521,10 +716,9 @@
             let endVal = document.getElementById('report-end-date').value;
             
             if(!startVal || !endVal) {
-                return null; // Both dates not selected, will fetch all time
+                return null; 
             }
             
-            // Set start of day for start date, end of day for end date
             let startDate = new Date(startVal);
             startDate.setHours(0, 0, 0, 0);
             
@@ -743,7 +937,7 @@
             }
         }
 
-        // --- 🆕 ४.१ Load Live Properties (For Admin Deletion Feature) ---
+        // --- ४.१ Load Live Properties (For Admin Deletion Feature) ---
         function loadLiveProperties() {
             let container = document.getElementById('admin_live_properties_list');
             if(typeof db !== 'undefined') {
@@ -766,7 +960,6 @@
                             <div class="action-subtitle" style="margin-bottom: 5px;"><i class="fa-solid fa-location-dot"></i> ${p.area}, ${p.taluka}</div>
                             
                             <div class="btn-group">
-                                <!-- 🆕 Admin Delete Provision -->
                                 <button class="btn btn-reject" style="width:100%" onclick="adminDeleteProperty('${doc.id}')"><i class="fa-solid fa-trash"></i> ही प्रॉपर्टी काढून टाका (Delete)</button>
                             </div>
                         </div>`;
@@ -776,7 +969,6 @@
             }
         }
 
-        // 🆕 Admin Direct Delete Logic
         function adminDeleteProperty(propId) {
             if(confirm("तुम्हाला खात्री आहे का? ही प्रॉपर्टी कायमची डिलीट होईल आणि ॲपवरून काढून टाकली जाईल.")) {
                 db.collection("properties").doc(propId).delete().then(() => {
@@ -809,18 +1001,26 @@
             }
         }
 
-        // --- ५. Flash Ads (With Direct Image Upload Logic) ---
-        let selectedAdFile = null;
+        // --- ५. Flash Ads (UPDATED Logic for Mobile and Desktop separate images) ---
+        let selectedAdFileMobile = null;
+        let selectedAdFileDesktop = null;
 
-        function previewAdImage(event) {
+        function previewAdImage(event, type) {
             const file = event.target.files[0];
             if(file) {
-                selectedAdFile = file;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('ad-image-preview');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    if (type === 'mobile') {
+                        selectedAdFileMobile = file;
+                        const preview = document.getElementById('ad-image-preview-mobile');
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    } else if (type === 'desktop') {
+                        selectedAdFileDesktop = file;
+                        const preview = document.getElementById('ad-image-preview-desktop');
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
                 }
                 reader.readAsDataURL(file);
             }
@@ -830,14 +1030,25 @@
             if(typeof db !== 'undefined') {
                 db.collection("admin_settings").doc("ads_config").get().then((doc) => {
                     if(doc.exists && doc.data().flashAd) {
-                        document.getElementById('flash-ad-text').value = doc.data().flashAd.text || '';
-                        document.getElementById('flash-ad-link').value = doc.data().flashAd.link || '';
+                        let adData = doc.data().flashAd;
+                        document.getElementById('flash-ad-text').value = adData.text || '';
+                        document.getElementById('flash-ad-link').value = adData.link || '';
                         
-                        if(doc.data().flashAd.imageUrl) {
-                            document.getElementById('flash-ad-image-url').value = doc.data().flashAd.imageUrl;
-                            const preview = document.getElementById('ad-image-preview');
-                            preview.src = doc.data().flashAd.imageUrl;
-                            preview.style.display = 'block';
+                        // Load Mobile Image
+                        if(adData.imageUrlMobile) {
+                            document.getElementById('flash-ad-image-url-mobile').value = adData.imageUrlMobile;
+                            const previewMobile = document.getElementById('ad-image-preview-mobile');
+                            previewMobile.src = adData.imageUrlMobile;
+                            previewMobile.style.display = 'block';
+                        }
+                        
+                        // Load Desktop Image (Fallback to old imageUrl if mobile/desktop split wasn't used before)
+                        let desktopUrl = adData.imageUrlDesktop || adData.imageUrl;
+                        if(desktopUrl) {
+                            document.getElementById('flash-ad-image-url-desktop').value = desktopUrl;
+                            const previewDesktop = document.getElementById('ad-image-preview-desktop');
+                            previewDesktop.src = desktopUrl;
+                            previewDesktop.style.display = 'block';
                         }
                     }
                 });
@@ -847,7 +1058,8 @@
         async function publishFlashAd() {
             let text = document.getElementById('flash-ad-text').value;
             let link = document.getElementById('flash-ad-link').value;
-            let currentImgUrl = document.getElementById('flash-ad-image-url').value;
+            let currentImgUrlMobile = document.getElementById('flash-ad-image-url-mobile').value;
+            let currentImgUrlDesktop = document.getElementById('flash-ad-image-url-desktop').value;
 
             if(!text) { alert("कृपया फ्लॅश ॲडचा मजकूर भरा!"); return; }
 
@@ -856,20 +1068,34 @@
             btn.disabled = true;
 
             try {
-                // If a new file is selected, upload it to Firebase Storage first
-                if(selectedAdFile && typeof firebase.storage !== 'undefined') {
+                if(typeof firebase.storage !== 'undefined') {
                     const storageRef = firebase.storage().ref();
-                    const fileRef = storageRef.child(`admin_ads/flash_ad_${Date.now()}`);
-                    const snapshot = await fileRef.put(selectedAdFile);
-                    currentImgUrl = await snapshot.ref.getDownloadURL();
+                    
+                    if(selectedAdFileMobile) {
+                        const fileRefMobile = storageRef.child(`admin_ads/flash_ad_mobile_${Date.now()}`);
+                        const snapshotMobile = await fileRefMobile.put(selectedAdFileMobile);
+                        currentImgUrlMobile = await snapshotMobile.ref.getDownloadURL();
+                    }
+                    
+                    if(selectedAdFileDesktop) {
+                        const fileRefDesktop = storageRef.child(`admin_ads/flash_ad_desktop_${Date.now()}`);
+                        const snapshotDesktop = await fileRefDesktop.put(selectedAdFileDesktop);
+                        currentImgUrlDesktop = await snapshotDesktop.ref.getDownloadURL();
+                    }
                 }
 
                 if(typeof db !== 'undefined') {
                     await db.collection("admin_settings").doc("ads_config").set({ 
-                        flashAd: { text: text, link: link, imageUrl: currentImgUrl, active: true }
+                        flashAd: { 
+                            text: text, 
+                            link: link, 
+                            imageUrlMobile: currentImgUrlMobile, 
+                            imageUrlDesktop: currentImgUrlDesktop,
+                            active: true 
+                        }
                     }, { merge: true });
                     
-                    alert("⚡ फ्लॅश जाहिरात आणि फोटो ॲपवर लाईव्ह झाली!");
+                    alert("⚡ फ्लॅश जाहिरात (मोबाईल आणि लॅपटॉप दोन्हीसाठी) ॲपवर लाईव्ह झाली!");
                 }
             } catch(e) {
                 console.log("Error uploading Ad", e);
@@ -886,9 +1112,15 @@
                     db.collection("admin_settings").doc("ads_config").set({ flashAd: { active: false } }, { merge: true }).then(() => {
                         document.getElementById('flash-ad-text').value = ''; 
                         document.getElementById('flash-ad-link').value = ''; 
-                        document.getElementById('flash-ad-image-url').value = ''; 
-                        document.getElementById('ad-image-preview').style.display = 'none';
-                        selectedAdFile = null;
+                        
+                        document.getElementById('flash-ad-image-url-mobile').value = ''; 
+                        document.getElementById('ad-image-preview-mobile').style.display = 'none';
+                        selectedAdFileMobile = null;
+                        
+                        document.getElementById('flash-ad-image-url-desktop').value = ''; 
+                        document.getElementById('ad-image-preview-desktop').style.display = 'none';
+                        selectedAdFileDesktop = null;
+                        
                         alert("🗑️ जाहिरात काढून टाकली.");
                     });
                 }
